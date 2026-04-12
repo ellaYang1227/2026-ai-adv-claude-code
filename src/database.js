@@ -68,6 +68,16 @@ function initializeDatabase() {
     );
   `);
 
+  // Migration: add payment columns to orders
+  const orderColumns = db.pragma('table_info(orders)');
+  const columnNames = orderColumns.map(c => c.name);
+  if (!columnNames.includes('payment_method')) {
+    db.exec("ALTER TABLE orders ADD COLUMN payment_method TEXT DEFAULT NULL");
+  }
+  if (!columnNames.includes('paid_at')) {
+    db.exec("ALTER TABLE orders ADD COLUMN paid_at TEXT DEFAULT NULL");
+  }
+
   // Seed data
   seedAdminUser();
   seedProducts();

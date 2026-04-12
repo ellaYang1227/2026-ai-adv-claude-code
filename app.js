@@ -32,6 +32,11 @@ app.use('/api/admin/products', require('./src/routes/adminProductRoutes'));
 app.use('/api/admin/orders', require('./src/routes/adminOrderRoutes'));
 app.use('/api/products', require('./src/routes/productRoutes'));
 app.use('/api/cart', require('./src/routes/cartRoutes'));
+// ECPay ReturnURL placeholder（本地端無法實際接收 callback，但綠界要求 ReturnURL 必填）
+app.post('/api/orders/ecpay/notify', express.urlencoded({ extended: true }), (req, res) => {
+  res.type('text/plain').status(200).send('1|OK');
+});
+
 app.use('/api/orders', require('./src/routes/orderRoutes'));
 
 // Page Routes

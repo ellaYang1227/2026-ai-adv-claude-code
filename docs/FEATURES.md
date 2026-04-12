@@ -313,6 +313,30 @@
 
 ---
 
-## 6. 金流整合（ECPay） ❌
+## 6. 金流整合（ECPay） ✅
 
-環境變數已定義，但程式碼尚未實作綠界金流串接。目前使用模擬付款機制替代。
+### 6.1 ECPay AIO 金流 ✅
+
+使用綠界全方位金流 AIO（CMV-SHA256）方案，消費者跳轉至綠界標準付款頁完成付款。
+
+**付款流程**：
+1. 用戶在訂單詳情頁點擊「前往付款」
+2. 前端呼叫 `POST /api/orders/:id/payment` 取得 ECPay 表單參數
+3. 前端動態建立 form 並提交至綠界付款頁
+4. 付款完成後綠界透過 ClientBackURL 導回訂單詳情頁
+5. 前端自動呼叫 `POST /api/orders/:id/check-payment` 查詢付款結果
+6. 後端呼叫綠界 QueryTradeInfo API 驗證付款狀態並更新訂單
+
+**限制**：本專案運行於本地端，無法接收綠界 ReturnURL callback，因此改用 QueryTradeInfo 主動查詢。
+
+**API 端點**：
+| 方法 | 路徑 | 認證 | 說明 |
+|------|------|------|------|
+| POST | `/api/orders/:id/payment` | JWT | 產生 ECPay 付款表單參數 |
+| POST | `/api/orders/:id/check-payment` | JWT | 查詢 ECPay 付款結果 |
+
+**Fallback**：若 ECPay 環境變數未設定，前端自動顯示模擬付款按鈕。
+
+### 6.2 模擬付款（保留） ✅
+
+透過 `PATCH /api/orders/:id/pay` 傳入 `{ action: "success" | "fail" }` 更新訂單狀態，作為 ECPay 未設定時的替代方案。

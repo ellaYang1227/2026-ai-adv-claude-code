@@ -15,7 +15,9 @@
 ├── .gitignore                 # Git 忽略規則
 │
 ├── src/
-│   ├── database.js            # 資料庫初始化（建表、seed admin + 商品資料、匯出 db 實例）
+│   ├── database.js            # 資料庫初始化（建表、migration、seed admin + 商品資料、匯出 db 實例）
+│   ├── services/
+│   │   └── ecpayService.js        # ECPay 綠界金流服務（CheckMacValue、付款表單、QueryTradeInfo）
 │   ├── middleware/
 │   │   ├── authMiddleware.js      # JWT Bearer Token 驗證，解析 req.user
 │   │   ├── adminMiddleware.js     # 檢查 req.user.role === 'admin'，否則 403
@@ -153,6 +155,8 @@
 | GET | `/` | JWT | 自己的訂單列表 |
 | GET | `/:id` | JWT | 訂單詳情 |
 | PATCH | `/:id/pay` | JWT | 模擬付款（success / fail） |
+| POST | `/:id/payment` | JWT | 產生 ECPay 付款表單參數 |
+| POST | `/:id/check-payment` | JWT | 查詢 ECPay 付款結果 |
 
 #### Admin Products (`/api/admin/products`)
 | 方法 | 路徑 | 認證 | 說明 |
@@ -283,6 +287,8 @@
 | recipient_address | TEXT | NOT NULL | 收件地址 |
 | total_amount | INTEGER | NOT NULL | 訂單總金額 |
 | status | TEXT | NOT NULL DEFAULT 'pending', CHECK('pending','paid','failed') | 訂單狀態 |
+| payment_method | TEXT | DEFAULT NULL | 付款方式（'ecpay' / 'simulated'） |
+| paid_at | TEXT | DEFAULT NULL | 付款成功時間 |
 | created_at | TEXT | NOT NULL DEFAULT datetime('now') | 建立時間 |
 
 ### order_items
@@ -300,9 +306,28 @@
 
 ## 金流整合（ECPay）
 
-`.env.example` 中定義了 ECPay 綠界金流的設定（`ECPAY_MERCHANT_ID`、`ECPAY_HASH_KEY`、`ECPAY_HASH_IV`、`ECPAY_ENV=staging`），但目前程式碼中**尚未實作**實際的 ECPay 串接。
+使用綠界全方位金流 AIO（CMV-SHA256）方案，核心服務位於 `src/services/ecpayService.js`。
 
-目前的付款機制為**模擬付款**：透過 `PATCH /api/orders/:id/pay` 傳入 `{ action: "success" | "fail" }` 直接更新訂單狀態，不經過真實金流。
+### 付款流程
+
+```
+用戶點擊「前往付款」
+  → POST /api/orders/:id/payment（產生 ECPay 表單參數）
+  → 前端建立 form 並 submit 至綠界付款頁
+  → 用戶在綠界完成付款
+  → 綠界透過 ClientBackURL 導回 /orders/:id?payment=check
+  → 前端自動呼叫 POST /api/orders/:id/check-payment
+  → 後端呼叫 QueryTradeInfo API 查詢結果
+  → 更新訂單狀態（paid / failed / pending）
+```
+
+### 本地開發限制
+
+專案僅運行於本地端，無法接收綠界 Server-to-Server ReturnURL callback。ReturnURL 參數雖設定（綠界要求必填），但實際付款結果透過 QueryTradeInfo API 主動查詢確認。
+
+### Fallback
+
+若 `.env` 中的 ECPay 環境變數（`ECPAY_MERCHANT_ID`、`ECPAY_HASH_KEY`、`ECPAY_HASH_IV`）未設定，前端自動顯示模擬付款按鈕，透過 `PATCH /api/orders/:id/pay` 直接更新訂單狀態。
 
 ## 頁面渲染架構
 

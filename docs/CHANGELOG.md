@@ -1,5 +1,17 @@
 # 更新日誌
 
+## [1.1.0] - 2026-04-12
+
+### 新增
+- ECPay 綠界金流 AIO 串接（CMV-SHA256）
+  - `src/services/ecpayService.js`：CheckMacValue 產生/驗證、付款表單參數組合、QueryTradeInfo 查詢
+  - `POST /api/orders/:id/payment`：產生 ECPay 付款表單參數
+  - `POST /api/orders/:id/check-payment`：查詢 ECPay 付款結果並更新訂單
+- 訂單詳情頁整合 ECPay 付款流程（前往付款按鈕、自動查詢付款狀態）
+- orders 表新增 `payment_method`、`paid_at` 欄位
+- ECPay CheckMacValue 單元測試（15 個測試案例，含 5 組官方 test vectors）
+- 模擬付款保留為 ECPay 未設定時的 fallback
+
 ## [1.0.0] - 2026-04-12
 
 ### 新增

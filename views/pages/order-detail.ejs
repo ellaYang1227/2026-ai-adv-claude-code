@@ -71,21 +71,49 @@
     </div>
 
     <!-- Payment Buttons -->
-    <div v-if="order.status === 'pending'" class="flex gap-4">
-      <button
-        @click="handlePaySuccess"
-        :disabled="paying"
-        class="bg-sage text-white px-8 py-3 rounded-full text-sm font-medium hover:bg-sage/90 transition-colors disabled:opacity-50"
-      >
-        {{ paying ? '處理中...' : '付款成功' }}
-      </button>
-      <button
-        @click="handlePayFail"
-        :disabled="paying"
-        class="bg-red-500 text-white px-8 py-3 rounded-full text-sm font-medium hover:bg-red-600 transition-colors disabled:opacity-50"
-      >
-        {{ paying ? '處理中...' : '付款失敗' }}
-      </button>
+    <div v-if="order.status === 'pending'" class="space-y-4">
+      <!-- ECPay Payment -->
+      <div v-if="ecpayEnabled">
+        <button
+          @click="goToEcpay"
+          :disabled="paying"
+          class="w-full bg-sage text-white px-8 py-3 rounded-full text-sm font-medium hover:bg-sage/90 transition-colors disabled:opacity-50"
+        >
+          {{ paying ? '處理中...' : '前往付款 (ECPay)' }}
+        </button>
+      </div>
+
+      <!-- Simulated Payment (fallback) -->
+      <div v-if="!ecpayEnabled" class="space-y-2">
+        <p class="text-xs text-text-muted">ECPay 未設定，使用模擬付款：</p>
+        <div class="flex gap-4">
+          <button
+            @click="handlePaySuccess"
+            :disabled="paying"
+            class="bg-sage text-white px-8 py-3 rounded-full text-sm font-medium hover:bg-sage/90 transition-colors disabled:opacity-50"
+          >
+            {{ paying ? '處理中...' : '模擬付款成功' }}
+          </button>
+          <button
+            @click="handlePayFail"
+            :disabled="paying"
+            class="bg-red-500 text-white px-8 py-3 rounded-full text-sm font-medium hover:bg-red-600 transition-colors disabled:opacity-50"
+          >
+            {{ paying ? '處理中...' : '模擬付款失敗' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Manual check button (after ECPay return) -->
+      <div v-if="ecpayEnabled && paymentResult === 'pending'">
+        <button
+          @click="checkPayment"
+          :disabled="paying"
+          class="w-full bg-white border border-sage text-sage px-8 py-3 rounded-full text-sm font-medium hover:bg-sage/5 transition-colors disabled:opacity-50"
+        >
+          {{ paying ? '查詢中...' : '重新查詢付款狀態' }}
+        </button>
+      </div>
     </div>
   </template>
 </div>
