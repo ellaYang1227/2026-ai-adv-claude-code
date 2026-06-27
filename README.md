@@ -13,6 +13,21 @@
 
 ---
 
+## [作業2] AI Agent 協作
+
+| 挑戰 | 說明 |
+|------|------|
+| 挑戰一：frontend-design Skill 搭配 Figma MCP 設計各頁面 | 使用 Claude 官方 frontend-design skill 搭配 Figma MCP，產出 7 頁設計稿並存至 `docs/design/`，依設計稿完成前台切版 |
+| 挑戰二：E2E 測試 Skill 與 Playwright MCP 自動化測試 | 建立 E2E 測試 Skill（`.claude/skills/e2e-payment-test/SKILL.md`），透過 Playwright MCP 讓 Claude 直接控制瀏覽器執行完整金流流程（3 個場景），測試影片上傳至 YouTube |
+
+分支：[homework2-design-e2e](https://github.com/ellaYang1227/2026-ai-adv-claude-code/tree/homework2-design-e2e)
+
+> 🎨 Figma 設計稿：[Bloom & Co. 花卉電商](https://www.figma.com/design/lnRMwFsPubRvnYzRPm2KMS/2026-AI-%E8%AA%B2%E7%A8%8B---Bloom---Co.-%E8%8A%B1%E5%8D%89%E9%9B%BB%E5%95%86?node-id=0-1&t=tammSKjsxx9lTmcD-1)
+>
+> 🎬 E2E 測試錄影：（上傳後補上 YouTube 連結）
+
+---
+
 ## 範例專案：Bloom & Co. 花卉電商網站
 
 全端花卉電商示範專案，提供前台商品瀏覽、購物車、訂單與線上付款功能，以及後台商品與訂單管理介面。
@@ -170,11 +185,20 @@ npm run dev:css
 
 ## 測試
 
+### 單元 / 整合測試（Vitest）
+
 ```bash
 npm test
 ```
 
-測試使用 Vitest + supertest，按固定順序執行（ecpay → auth → products → cart → orders → adminProducts → adminOrders），共 48 個測試案例。
+使用 Vitest + supertest，按固定順序執行（ecpay → auth → products → cart → orders → adminProducts → adminOrders），共 48 個測試案例。
+
+### E2E 測試（Playwright MCP）
+
+呼叫 `/e2e-payment-test` Skill，由 Claude 透過 Playwright MCP 直接控制瀏覽器執行測試，不需預先撰寫測試腳本。
+
+涵蓋 3 個場景：完整金流成功路徑、模擬付款失敗、空購物車狀態驗證。
+測試過程以 Xbox Game Bar 或 OBS 螢幕錄製，影片上傳至 YouTube。
 
 ## 常用指令
 
@@ -185,7 +209,7 @@ npm test
 | `npm run dev:css` | Tailwind CSS watch |
 | `npm run css:build` | 建置壓縮 CSS |
 | `npm run openapi` | 產生 OpenAPI JSON |
-| `npm test` | 執行測試套件 |
+| `npm test` | 執行 Vitest 測試套件 |
 
 ## 專案文件
 
