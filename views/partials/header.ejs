@@ -4,7 +4,8 @@
       Bloom & Co.
     </a>
 
-    <nav class="flex items-center gap-8 text-[15px] text-white/85">
+    <!-- Desktop Nav (md+) -->
+    <nav class="hidden md:flex items-center gap-8 text-[15px] text-white/85">
       <a href="/" class="hover:text-white transition-colors">商品</a>
       <a href="/cart" class="hover:text-white transition-colors relative">
         購物車
@@ -19,8 +20,64 @@
       </a>
     </nav>
 
-    <div id="auth-nav" class="flex items-center gap-4 text-sm">
+    <!-- Desktop Auth (md+) -->
+    <div id="auth-nav" class="hidden md:flex items-center gap-4 text-sm">
       <a href="/login" class="border text-white font-medium hover:bg-white/10 transition-colors" style="border-color:rgba(255,255,255,0.55); border-radius:4px; padding:9px 22px; font-size:14px;">登入</a>
+    </div>
+
+    <!-- Mobile Hamburger Button -->
+    <button id="mobile-menu-btn" class="md:hidden flex items-center text-white p-1" aria-label="開啟選單" aria-expanded="false">
+      <svg id="icon-hamburger" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <line x1="3" y1="12" x2="21" y2="12"/>
+        <line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+      <svg id="icon-close" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="display:none;">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Mobile Dropdown Menu -->
+  <div id="mobile-menu" class="hidden md:hidden bg-bloom-green border-t border-white/10">
+    <div class="max-w-7xl mx-auto px-5 py-2">
+      <nav class="flex flex-col text-[15px] text-white/85">
+        <a href="/" class="py-3 border-b border-white/10 hover:text-white transition-colors">商品</a>
+        <a href="/cart" class="py-3 border-b border-white/10 hover:text-white transition-colors">購物車</a>
+        <a id="mobile-orders-link" href="/orders" class="py-3 border-b border-white/10 hover:text-white transition-colors" style="display:none;">我的訂單</a>
+      </nav>
+      <div id="mobile-auth-nav" class="py-3">
+        <a href="/login" class="text-white/85 hover:text-white text-[15px] transition-colors">登入</a>
+      </div>
     </div>
   </div>
 </header>
+
+<script>
+(function () {
+  var btn = document.getElementById('mobile-menu-btn');
+  var menu = document.getElementById('mobile-menu');
+  var iconH = document.getElementById('icon-hamburger');
+  var iconC = document.getElementById('icon-close');
+  if (!btn || !menu) return;
+
+  function closeMenu() {
+    menu.classList.add('hidden');
+    iconH.style.display = '';
+    iconC.style.display = 'none';
+    btn.setAttribute('aria-expanded', 'false');
+  }
+
+  btn.addEventListener('click', function () {
+    var open = !menu.classList.toggle('hidden');
+    btn.setAttribute('aria-expanded', String(open));
+    iconH.style.display = open ? 'none' : '';
+    iconC.style.display = open ? '' : 'none';
+  });
+
+  menu.querySelectorAll('a').forEach(function (a) {
+    a.addEventListener('click', closeMenu);
+  });
+})();
+</script>

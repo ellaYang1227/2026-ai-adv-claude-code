@@ -22,13 +22,13 @@
       v-for="order in orders"
       :key="order.id"
       :href="'/orders/' + order.id"
-      class="flex items-center justify-between bg-white border border-bloom-border rounded-[2px] p-5 hover:shadow-sm transition-shadow group"
+      class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-white border border-bloom-border rounded-[2px] p-5 hover:shadow-sm transition-shadow group"
     >
       <div>
         <p class="font-semibold text-text-primary" style="font-size:15px;">訂單 {{ order.order_no }}</p>
         <p class="text-text-muted mt-1" style="font-size:13px;">{{ new Date(order.created_at).toLocaleDateString('zh-TW') }}</p>
       </div>
-      <div class="flex items-center gap-4">
+      <div class="flex items-center gap-3 flex-wrap">
         <span class="font-semibold text-text-primary">NT$ {{ order.total_amount.toLocaleString() }}</span>
         <span
           class="text-xs px-3 py-1.5 rounded-full font-semibold"
