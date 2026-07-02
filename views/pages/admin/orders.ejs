@@ -5,7 +5,7 @@
       <label class="text-sm text-text-secondary">狀態篩選</label>
       <select
         v-model="statusFilter"
-        class="border border-gray-200 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-rose-primary"
+        class="border border-gray-200 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-bloom-green"
       >
         <option value="">全部</option>
         <option value="pending">待付款</option>
@@ -16,7 +16,7 @@
   </div>
 
   <div v-if="loading" class="flex justify-center py-12">
-    <div class="w-8 h-8 border-4 border-rose-primary border-t-transparent rounded-full animate-spin"></div>
+    <div class="w-8 h-8 border-4 border-bloom-green border-t-transparent rounded-full animate-spin"></div>
   </div>
 
   <template v-else>
@@ -64,7 +64,7 @@
         :key="p"
         @click="loadOrders(p)"
         class="w-10 h-10 rounded-full text-sm transition-colors"
-        :class="p === pagination.page ? 'bg-rose-primary text-white' : 'bg-white text-text-secondary hover:bg-rose-bg'"
+        :class="p === pagination.page ? 'bg-bloom-green text-white' : 'bg-white text-text-secondary hover:bg-bloom-surface'"
       >
         {{ p }}
       </button>
@@ -76,7 +76,7 @@
     <div class="absolute inset-0 bg-black/40" @click="detailVisible = false"></div>
     <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-2xl mx-4 p-6 max-h-[80vh] overflow-y-auto">
       <div v-if="detailLoading" class="flex justify-center py-8">
-        <div class="w-8 h-8 border-4 border-rose-primary border-t-transparent rounded-full animate-spin"></div>
+        <div class="w-8 h-8 border-4 border-bloom-green border-t-transparent rounded-full animate-spin"></div>
       </div>
       <template v-else-if="detailOrder">
         <div class="flex items-start justify-between mb-4">
@@ -137,7 +137,7 @@
               </tbody>
             </table>
             <div class="flex justify-end mt-3 pt-2 border-t border-gray-100">
-              <span class="font-bold text-rose-primary text-lg">總計 NT$ {{ detailOrder.total_amount.toLocaleString() }}</span>
+              <span class="font-bold text-bloom-green text-lg">總計 NT$ {{ detailOrder.total_amount.toLocaleString() }}</span>
             </div>
           </div>
         </div>

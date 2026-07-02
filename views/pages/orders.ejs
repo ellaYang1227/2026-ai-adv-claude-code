@@ -1,39 +1,42 @@
 <div id="app">
-  <h1 class="text-2xl font-bold text-text-primary mb-6" style="font-family: 'Noto Serif TC', serif;">我的訂單</h1>
-
-  <div v-if="loading" class="flex justify-center py-12">
-    <div class="w-8 h-8 border-4 border-rose-primary border-t-transparent rounded-full animate-spin"></div>
+  <!-- Page Header — viewport breakout -->
+  <div class="-mt-8 mb-8" style="width:100vw; margin-left:calc(50% - 50vw); background:#F2F0EB; border-bottom:1px solid #DED9D1; padding:48px 0 36px;">
+    <div class="max-w-7xl mx-auto px-5 md:px-10">
+      <h1 class="text-[38px] text-text-primary" style="font-family: 'Cormorant Garamond', serif; font-weight: 700;">我的訂單</h1>
+      <p class="mt-2" style="font-size:14px; color:#6B6B6B;">查看所有歷史訂單紀錄</p>
+    </div>
   </div>
 
-  <div v-else-if="orders.length === 0" class="text-center py-12">
-    <div class="text-4xl mb-3">&#128230;</div>
+  <div v-if="loading" class="flex justify-center py-16">
+    <div class="w-8 h-8 border-2 border-bloom-green border-t-transparent rounded-full animate-spin"></div>
+  </div>
+
+  <div v-else-if="orders.length === 0" class="text-center py-16 border border-bloom-border rounded-[2px]">
     <p class="text-text-secondary mb-1">尚無訂單</p>
-    <p class="text-text-muted text-sm mb-4">快去選購喜歡的花束吧！</p>
-    <a href="/" class="inline-block bg-rose-primary text-white px-6 py-2 rounded-full text-sm hover:bg-rose-dark transition-colors">去逛逛</a>
+    <p class="text-text-muted text-sm mb-5">快去選購喜歡的花束吧！</p>
+    <a href="/" class="inline-block bg-bloom-green text-white px-6 py-2.5 rounded-[2px] text-sm hover:bg-bloom-green-hover transition-colors">去逛逛</a>
   </div>
 
-  <div v-else class="space-y-4">
+  <div v-else class="space-y-3">
     <a
       v-for="order in orders"
       :key="order.id"
       :href="'/orders/' + order.id"
-      class="block bg-white rounded-2xl shadow-sm p-5 hover:shadow-md transition-shadow"
+      class="flex items-center justify-between bg-white border border-bloom-border rounded-[2px] p-5 hover:shadow-sm transition-shadow group"
     >
-      <div class="flex items-center justify-between">
-        <div>
-          <p class="text-sm text-text-secondary">訂單編號：{{ order.order_no }}</p>
-          <p class="text-xs text-text-muted mt-1">{{ new Date(order.created_at).toLocaleDateString('zh-TW') }}</p>
-        </div>
-        <div class="flex items-center gap-3">
-          <span class="font-bold text-text-primary">NT$ {{ order.total_amount.toLocaleString() }}</span>
-          <span
-            class="text-xs px-3 py-1 rounded-full font-medium"
-            :class="statusMap[order.status]?.cls || 'bg-gray-100 text-gray-600'"
-          >
-            {{ statusMap[order.status]?.label || order.status }}
-          </span>
-          <span class="text-text-muted">&#8594;</span>
-        </div>
+      <div>
+        <p class="font-semibold text-text-primary" style="font-size:15px;">訂單 {{ order.order_no }}</p>
+        <p class="text-text-muted mt-1" style="font-size:13px;">{{ new Date(order.created_at).toLocaleDateString('zh-TW') }}</p>
+      </div>
+      <div class="flex items-center gap-4">
+        <span class="font-semibold text-text-primary">NT$ {{ order.total_amount.toLocaleString() }}</span>
+        <span
+          class="text-xs px-3 py-1.5 rounded-full font-semibold"
+          :class="statusMap[order.status]?.cls || 'bg-bloom-surface text-text-muted'"
+        >
+          {{ statusMap[order.status]?.label || order.status }}
+        </span>
+        <span class="bg-bloom-green text-white font-medium rounded-[2px] hover:bg-bloom-green-hover transition-colors" style="font-size:13px; padding:8px 18px;">查看詳情</span>
       </div>
     </a>
   </div>

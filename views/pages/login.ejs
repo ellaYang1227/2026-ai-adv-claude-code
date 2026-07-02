@@ -1,23 +1,27 @@
 <div id="app">
-  <div class="min-h-[60vh] flex items-center justify-center">
-    <div class="bg-white rounded-2xl shadow-sm w-full max-w-md p-8">
-      <h1 class="text-2xl font-bold text-rose-primary text-center mb-6" style="font-family: 'Noto Serif TC', serif;">
-        花漾生活
-      </h1>
+  <div class="min-h-[75vh] flex items-center justify-center py-8">
+    <div class="bg-white border border-bloom-border rounded-[2px] shadow-sm w-full max-w-md p-10">
+      <!-- Brand -->
+      <div class="text-center mb-8">
+        <h1 class="text-3xl text-bloom-green" style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 600;">
+          Bloom & Co.
+        </h1>
+        <p class="text-text-muted text-sm mt-1">歡迎回來</p>
+      </div>
 
       <!-- Tabs -->
-      <div class="flex mb-6 border border-gray-200 rounded-full overflow-hidden">
+      <div class="flex mb-7 bg-bloom-surface rounded-[2px] p-1">
         <button
           @click="activeTab = 'login'; errors = {}"
-          class="flex-1 py-2 text-sm font-medium transition-colors"
-          :class="activeTab === 'login' ? 'bg-rose-primary text-white' : 'text-text-secondary hover:bg-gray-50'"
+          class="flex-1 py-2 text-sm font-medium transition-colors rounded-[1px]"
+          :class="activeTab === 'login' ? 'bg-white text-text-primary shadow-sm' : 'text-text-secondary hover:text-text-primary'"
         >
           登入
         </button>
         <button
           @click="activeTab = 'register'; errors = {}"
-          class="flex-1 py-2 text-sm font-medium transition-colors"
-          :class="activeTab === 'register' ? 'bg-rose-primary text-white' : 'text-text-secondary hover:bg-gray-50'"
+          class="flex-1 py-2 text-sm font-medium transition-colors rounded-[1px]"
+          :class="activeTab === 'register' ? 'bg-white text-text-primary shadow-sm' : 'text-text-secondary hover:text-text-primary'"
         >
           註冊
         </button>
@@ -26,24 +30,27 @@
       <!-- Login Form -->
       <form v-if="activeTab === 'login'" @submit.prevent="handleLogin" class="space-y-4">
         <div>
-          <label class="block text-sm text-text-secondary mb-1">Email</label>
+          <label class="block text-xs font-medium text-text-primary mb-1.5 uppercase tracking-wide">電子郵件</label>
           <input
             v-model="loginForm.email"
             type="email"
-            placeholder="請輸入 Email"
-            class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-rose-primary"
+            placeholder="email@example.com"
+            class="w-full border border-bloom-border rounded-[2px] px-4 py-2.5 text-sm focus:outline-none focus:border-bloom-green transition-colors"
             :class="{ 'border-red-400': errors.email }"
           />
           <p v-if="errors.email" class="text-red-500 text-xs mt-1">{{ errors.email }}</p>
         </div>
 
         <div>
-          <label class="block text-sm text-text-secondary mb-1">密碼</label>
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="text-xs font-medium text-text-primary uppercase tracking-wide">密碼</label>
+            <span class="text-xs text-text-muted cursor-pointer hover:text-text-secondary">忘記密碼？</span>
+          </div>
           <input
             v-model="loginForm.password"
             type="password"
-            placeholder="請輸入密碼"
-            class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-rose-primary"
+            placeholder="••••••••"
+            class="w-full border border-bloom-border rounded-[2px] px-4 py-2.5 text-sm focus:outline-none focus:border-bloom-green transition-colors"
             :class="{ 'border-red-400': errors.password }"
           />
           <p v-if="errors.password" class="text-red-500 text-xs mt-1">{{ errors.password }}</p>
@@ -52,45 +59,50 @@
         <button
           type="submit"
           :disabled="submitting"
-          class="w-full bg-rose-primary text-white py-3 rounded-full text-sm font-medium hover:bg-rose-dark transition-colors disabled:opacity-50"
+          class="w-full bg-bloom-green text-white py-3 rounded-[2px] text-sm font-medium hover:bg-bloom-green-hover transition-colors disabled:opacity-40 mt-2"
         >
           {{ submitting ? '登入中...' : '登入' }}
         </button>
+
+        <p class="text-center text-xs text-text-muted pt-2">
+          還沒有帳號？
+          <button type="button" @click="activeTab = 'register'; errors = {}" class="text-bloom-green font-medium hover:underline">立即註冊</button>
+        </p>
       </form>
 
       <!-- Register Form -->
       <form v-else @submit.prevent="handleRegister" class="space-y-4">
         <div>
-          <label class="block text-sm text-text-secondary mb-1">姓名</label>
+          <label class="block text-xs font-medium text-text-primary mb-1.5 uppercase tracking-wide">姓名</label>
           <input
             v-model="registerForm.name"
             type="text"
             placeholder="請輸入姓名"
-            class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-rose-primary"
+            class="w-full border border-bloom-border rounded-[2px] px-4 py-2.5 text-sm focus:outline-none focus:border-bloom-green transition-colors"
             :class="{ 'border-red-400': errors.name }"
           />
           <p v-if="errors.name" class="text-red-500 text-xs mt-1">{{ errors.name }}</p>
         </div>
 
         <div>
-          <label class="block text-sm text-text-secondary mb-1">Email</label>
+          <label class="block text-xs font-medium text-text-primary mb-1.5 uppercase tracking-wide">電子郵件</label>
           <input
             v-model="registerForm.email"
             type="email"
-            placeholder="請輸入 Email"
-            class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-rose-primary"
+            placeholder="email@example.com"
+            class="w-full border border-bloom-border rounded-[2px] px-4 py-2.5 text-sm focus:outline-none focus:border-bloom-green transition-colors"
             :class="{ 'border-red-400': errors.email }"
           />
           <p v-if="errors.email" class="text-red-500 text-xs mt-1">{{ errors.email }}</p>
         </div>
 
         <div>
-          <label class="block text-sm text-text-secondary mb-1">密碼</label>
+          <label class="block text-xs font-medium text-text-primary mb-1.5 uppercase tracking-wide">密碼</label>
           <input
             v-model="registerForm.password"
             type="password"
             placeholder="至少 6 個字元"
-            class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-rose-primary"
+            class="w-full border border-bloom-border rounded-[2px] px-4 py-2.5 text-sm focus:outline-none focus:border-bloom-green transition-colors"
             :class="{ 'border-red-400': errors.password }"
           />
           <p v-if="errors.password" class="text-red-500 text-xs mt-1">{{ errors.password }}</p>
@@ -99,10 +111,15 @@
         <button
           type="submit"
           :disabled="submitting"
-          class="w-full bg-rose-primary text-white py-3 rounded-full text-sm font-medium hover:bg-rose-dark transition-colors disabled:opacity-50"
+          class="w-full bg-bloom-green text-white py-3 rounded-[2px] text-sm font-medium hover:bg-bloom-green-hover transition-colors disabled:opacity-40 mt-2"
         >
-          {{ submitting ? '註冊中...' : '註冊' }}
+          {{ submitting ? '註冊中...' : '建立帳號' }}
         </button>
+
+        <p class="text-center text-xs text-text-muted pt-2">
+          已有帳號？
+          <button type="button" @click="activeTab = 'login'; errors = {}" class="text-bloom-green font-medium hover:underline">立即登入</button>
+        </p>
       </form>
     </div>
   </div>

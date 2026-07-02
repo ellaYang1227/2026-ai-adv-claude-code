@@ -14,16 +14,16 @@ createApp({
     const ecpayEnabled = ref(true);
 
     const statusMap = {
-      pending: { label: '待付款', cls: 'bg-apricot/20 text-apricot' },
-      paid: { label: '已付款', cls: 'bg-sage/20 text-sage' },
-      failed: { label: '付款失敗', cls: 'bg-red-100 text-red-600' },
+      pending: { label: '待付款', cls: 'bg-status-pending-bg text-status-pending-text' },
+      paid: { label: '已付款', cls: 'bg-status-paid-bg text-status-paid-text' },
+      failed: { label: '付款失敗', cls: 'bg-status-failed-bg text-status-failed-text' },
     };
 
     const paymentMessages = {
-      success: { text: '付款成功！感謝您的購買。', cls: 'bg-sage/10 text-sage border border-sage/20' },
-      failed: { text: '付款失敗，請重試。', cls: 'bg-red-50 text-red-600 border border-red-100' },
-      cancel: { text: '付款已取消。', cls: 'bg-apricot/10 text-apricot border border-apricot/20' },
-      pending: { text: '付款尚未完成，請稍後再查詢或重新付款。', cls: 'bg-apricot/10 text-apricot border border-apricot/20' },
+      success: { text: '付款成功！感謝您的購買。', cls: 'bg-status-paid-bg text-status-paid-text border border-status-paid-text/20' },
+      failed: { text: '付款失敗，請重試。', cls: 'bg-status-failed-bg text-status-failed-text border border-status-failed-text/20' },
+      cancel: { text: '付款已取消。', cls: 'bg-status-pending-bg text-status-pending-text border border-status-pending-text/20' },
+      pending: { text: '付款尚未完成，請稍後再查詢或重新付款。', cls: 'bg-status-pending-bg text-status-pending-text border border-status-pending-text/20' },
       checking: { text: '正在查詢付款狀態...', cls: 'bg-blue-50 text-blue-600 border border-blue-100' },
     };
 

@@ -6,9 +6,9 @@ const Notification = {
     if (!el) return;
 
     const colors = {
-      success: 'bg-sage text-white',
+      success: 'bg-bloom-sage text-white',
       error: 'bg-red-500 text-white',
-      warning: 'bg-apricot text-white',
+      warning: 'bg-bloom-clay text-white',
       info: 'bg-gray-700 text-white'
     };
 

@@ -1,118 +1,163 @@
 <div id="app" data-order-id="<%= orderId %>" data-payment-result="<%= paymentResult %>">
-  <h1 class="text-2xl font-bold text-text-primary mb-6" style="font-family: 'Noto Serif TC', serif;">訂單詳情</h1>
+  <!-- Breadcrumb -->
+  <nav class="flex items-center gap-2 text-sm text-text-muted mb-6">
+    <a href="/orders" class="hover:text-text-primary transition-colors">我的訂單</a>
+    <span>/</span>
+    <span class="text-text-primary">訂單詳情</span>
+  </nav>
 
-  <div v-if="loading" class="flex justify-center py-12">
-    <div class="w-8 h-8 border-4 border-rose-primary border-t-transparent rounded-full animate-spin"></div>
+  <div v-if="loading" class="flex justify-center py-16">
+    <div class="w-8 h-8 border-2 border-bloom-green border-t-transparent rounded-full animate-spin"></div>
   </div>
 
   <template v-else-if="order">
     <!-- Payment Result Alert -->
     <div
       v-if="paymentResult && paymentMessages[paymentResult]"
-      class="rounded-xl p-4 mb-6 text-sm"
+      class="rounded-[2px] p-4 mb-6 text-sm"
       :class="paymentMessages[paymentResult].cls"
     >
       {{ paymentMessages[paymentResult].text }}
     </div>
 
-    <!-- Order Info -->
-    <div class="bg-white rounded-2xl shadow-sm p-6 mb-6">
-      <div class="flex items-start justify-between">
-        <div>
-          <p class="text-sm text-text-secondary">訂單編號：{{ order.order_no }}</p>
-          <p class="text-xs text-text-muted mt-1">建立日期：{{ new Date(order.created_at).toLocaleDateString('zh-TW') }}</p>
+    <!-- Order Header -->
+    <div class="flex items-start justify-between mb-6">
+      <div>
+        <h1 class="text-[34px] text-text-primary" style="font-family: 'Cormorant Garamond', serif; font-weight: 700;">
+          訂單 {{ order.order_no }}
+        </h1>
+        <p class="text-text-muted text-sm mt-1">{{ new Date(order.created_at).toLocaleDateString('zh-TW') }}　共 {{ order.items?.length || 0 }} 件商品</p>
+      </div>
+      <span
+        class="text-sm px-4 py-2 rounded-full font-semibold mt-1"
+        :class="statusMap[order.status]?.cls || 'bg-bloom-surface text-text-muted'"
+      >
+        {{ statusMap[order.status]?.label || order.status }}
+      </span>
+    </div>
+
+    <div class="w-full h-px bg-bloom-border mb-8"></div>
+
+    <div class="flex flex-col lg:flex-row gap-10">
+      <!-- Left: Items + Summary -->
+      <div class="flex-1">
+        <h2 class="font-semibold text-text-primary mb-4" style="font-size:16px;">商品明細</h2>
+        <div class="mb-6">
+          <div
+            v-for="item in order.items"
+            :key="item.id"
+            class="flex items-center gap-4 py-4"
+            style="border-bottom: 1px solid #DEDAD4;"
+          >
+            <div class="flex-1 min-w-0">
+              <p class="truncate" style="font-size:14px; font-weight:500; color:#1A1A1A;">{{ item.product_name }}</p>
+              <p style="font-size:13px; color:#9A948E; margin-top:4px;">× {{ item.quantity }}</p>
+            </div>
+            <div class="text-right">
+              <p style="font-size:13px; color:#6B6B6B;">NT$ {{ item.product_price.toLocaleString() }}</p>
+              <p style="font-size:14px; font-weight:600; color:#1A1A1A; margin-top:2px;">NT$ {{ (item.product_price * item.quantity).toLocaleString() }}</p>
+            </div>
+          </div>
         </div>
-        <span
-          class="text-xs px-3 py-1 rounded-full font-medium"
-          :class="statusMap[order.status]?.cls || 'bg-gray-100 text-gray-600'"
-        >
-          {{ statusMap[order.status]?.label || order.status }}
-        </span>
-      </div>
-    </div>
 
-    <!-- Recipient Info -->
-    <div class="bg-white rounded-2xl shadow-sm p-6 mb-6">
-      <h2 class="font-medium text-text-primary mb-3">收件資訊</h2>
-      <div class="text-sm space-y-2 text-text-secondary">
-        <p>收件人：{{ order.recipient_name }}</p>
-        <p>Email：{{ order.recipient_email }}</p>
-        <p>地址：{{ order.recipient_address }}</p>
-      </div>
-    </div>
-
-    <!-- Order Items -->
-    <div class="bg-white rounded-2xl shadow-sm p-6 mb-6">
-      <h2 class="font-medium text-text-primary mb-3">商品明細</h2>
-      <table class="w-full text-sm">
-        <thead>
-          <tr class="border-b border-gray-100 text-text-muted">
-            <th class="text-left py-2 font-normal">商品名稱</th>
-            <th class="text-right py-2 font-normal">單價</th>
-            <th class="text-right py-2 font-normal">數量</th>
-            <th class="text-right py-2 font-normal">小計</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="item in order.items" :key="item.id" class="border-b border-gray-50">
-            <td class="py-3 text-text-primary">{{ item.product_name }}</td>
-            <td class="py-3 text-right text-text-secondary">NT$ {{ item.product_price.toLocaleString() }}</td>
-            <td class="py-3 text-right text-text-secondary">{{ item.quantity }}</td>
-            <td class="py-3 text-right text-text-primary font-medium">NT$ {{ (item.product_price * item.quantity).toLocaleString() }}</td>
-          </tr>
-        </tbody>
-        <tfoot>
-          <tr>
-            <td colspan="3" class="pt-3 text-right font-bold text-text-primary">總計</td>
-            <td class="pt-3 text-right font-bold text-rose-primary text-lg">NT$ {{ order.total_amount.toLocaleString() }}</td>
-          </tr>
-        </tfoot>
-      </table>
-    </div>
-
-    <!-- Payment Buttons -->
-    <div v-if="order.status === 'pending'" class="space-y-4">
-      <!-- ECPay Payment -->
-      <div v-if="ecpayEnabled">
-        <button
-          @click="goToEcpay"
-          :disabled="paying"
-          class="w-full bg-sage text-white px-8 py-3 rounded-full text-sm font-medium hover:bg-sage/90 transition-colors disabled:opacity-50"
-        >
-          {{ paying ? '處理中...' : '前往付款 (ECPay)' }}
-        </button>
-      </div>
-
-      <!-- Simulated Payment (fallback) -->
-      <div v-if="!ecpayEnabled" class="space-y-2">
-        <p class="text-xs text-text-muted">ECPay 未設定，使用模擬付款：</p>
-        <div class="flex gap-4">
-          <button
-            @click="handlePaySuccess"
-            :disabled="paying"
-            class="bg-sage text-white px-8 py-3 rounded-full text-sm font-medium hover:bg-sage/90 transition-colors disabled:opacity-50"
-          >
-            {{ paying ? '處理中...' : '模擬付款成功' }}
-          </button>
-          <button
-            @click="handlePayFail"
-            :disabled="paying"
-            class="bg-red-500 text-white px-8 py-3 rounded-full text-sm font-medium hover:bg-red-600 transition-colors disabled:opacity-50"
-          >
-            {{ paying ? '處理中...' : '模擬付款失敗' }}
-          </button>
+        <!-- Price summary -->
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between text-text-secondary">
+            <span>小計</span>
+            <span>NT$ {{ order.total_amount.toLocaleString() }}</span>
+          </div>
+          <div class="flex justify-between text-text-secondary">
+            <span>運費</span>
+            <span>免費</span>
+          </div>
+          <div class="flex justify-between" style="font-size:16px; font-weight:600; color:#1A1A1A;">
+            <span>合計</span>
+            <span>NT$ {{ order.total_amount.toLocaleString() }}</span>
+          </div>
         </div>
       </div>
 
-      <!-- Manual check button (after ECPay return) -->
-      <div v-if="ecpayEnabled && paymentResult === 'pending'">
-        <button
-          @click="checkPayment"
-          :disabled="paying"
-          class="w-full bg-white border border-sage text-sage px-8 py-3 rounded-full text-sm font-medium hover:bg-sage/5 transition-colors disabled:opacity-50"
-        >
-          {{ paying ? '查詢中...' : '重新查詢付款狀態' }}
-        </button>
+      <!-- Right: Recipient + Payment -->
+      <div class="lg:w-[380px] space-y-5">
+        <!-- Recipient -->
+        <div class="bg-bloom-surface border border-bloom-border rounded-[2px] p-5">
+          <h2 class="font-semibold text-text-primary mb-3 text-sm tracking-wide">配送資訊</h2>
+          <div class="text-sm space-y-2 text-text-secondary">
+            <p>收件人：{{ order.recipient_name }}</p>
+            <p>Email：{{ order.recipient_email }}</p>
+            <p>地址：{{ order.recipient_address }}</p>
+          </div>
+        </div>
+
+        <!-- 付款資訊 -->
+        <div class="bg-white border border-bloom-border rounded-[2px] p-5">
+          <h2 class="font-semibold text-text-primary mb-3 text-sm tracking-wide">付款資訊</h2>
+          <div class="text-sm space-y-2 text-text-secondary">
+            <div class="flex justify-between">
+              <span class="text-text-muted">付款方式</span>
+              <span>{{ order.payment_method || (ecpayEnabled ? '信用卡（ECPay）' : '模擬付款') }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-text-muted">付款狀態</span>
+              <span :class="statusMap[order.status]?.cls?.replace('bg-status-','text-').split(' ')[0] || ''"
+                    class="font-medium">
+                {{ statusMap[order.status]?.label || order.status }}
+              </span>
+            </div>
+            <div v-if="order.paid_at" class="flex justify-between">
+              <span class="text-text-muted">付款時間</span>
+              <span>{{ new Date(order.paid_at).toLocaleString('zh-TW') }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment Buttons -->
+        <div v-if="order.status === 'pending'" class="space-y-3">
+          <div v-if="ecpayEnabled">
+            <button
+              @click="goToEcpay"
+              :disabled="paying"
+              class="w-full bg-bloom-green text-white px-8 py-3 rounded-[2px] text-sm font-medium hover:bg-bloom-green-hover transition-colors disabled:opacity-40"
+            >
+              {{ paying ? '處理中...' : '前往付款 (ECPay)' }}
+            </button>
+          </div>
+
+          <div v-if="!ecpayEnabled" class="space-y-2">
+            <p class="text-xs text-text-muted">ECPay 未設定，使用模擬付款：</p>
+            <button
+              @click="handlePaySuccess"
+              :disabled="paying"
+              class="w-full bg-bloom-green text-white px-8 py-3 rounded-[2px] text-sm font-medium hover:bg-bloom-green-hover transition-colors disabled:opacity-40"
+            >
+              {{ paying ? '處理中...' : '模擬付款成功' }}
+            </button>
+            <button
+              @click="handlePayFail"
+              :disabled="paying"
+              class="w-full bg-white border border-red-300 text-red-500 px-8 py-3 rounded-[2px] text-sm font-medium hover:bg-red-50 transition-colors disabled:opacity-40"
+            >
+              {{ paying ? '處理中...' : '模擬付款失敗' }}
+            </button>
+          </div>
+
+          <div v-if="ecpayEnabled && paymentResult === 'pending'">
+            <button
+              @click="checkPayment"
+              :disabled="paying"
+              class="w-full bg-white border border-bloom-border text-text-secondary px-8 py-3 rounded-[2px] text-sm font-medium hover:bg-bloom-surface transition-colors disabled:opacity-40"
+            >
+              {{ paying ? '查詢中...' : '重新查詢付款狀態' }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Re-order button for paid orders -->
+        <div v-if="order.status === 'paid'">
+          <a href="/" class="block w-full text-center bg-bloom-green text-white py-3 rounded-[2px] text-sm font-medium hover:bg-bloom-green-hover transition-colors">
+            再次購買
+          </a>
+        </div>
       </div>
     </div>
   </template>
