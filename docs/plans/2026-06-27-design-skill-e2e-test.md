@@ -116,7 +116,7 @@ Claude 透過 Playwright MCP 工具逐步操作瀏覽器，測試過程以 Windo
 - [x] 安裝 Anthropic 官方 figma 插件（`/plugin install figma`），完成 Figma 帳號 OAuth 授權
 - [x] 呼叫 `/frontend-design` 搭配 Figma MCP 產出各頁面設計稿
 - [x] 依設計稿完成 7 個 EJS 檔案切版（含 header、admin 色彩、RWD 響應式）
-- [ ] 設定 Playwright MCP（`claude mcp add playwright npx @playwright/mcp@latest`）
-- [ ] 呼叫 `/e2e-payment-test` 透過 Playwright MCP 執行測試並截圖
+- [x] 設定 Playwright MCP（`claude mcp add playwright npx @playwright/mcp@latest`）
+- [x] 呼叫 `/e2e-payment-test` 透過 Playwright MCP 執行測試並截圖
 - [ ] 上傳測試錄影至 YouTube，補上連結至 `README.md`
 - [ ] 計畫完成後移至 `docs/plans/archive/`
