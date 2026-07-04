@@ -198,7 +198,7 @@ npm test
 呼叫 `/e2e-payment-test` Skill，由 Claude 透過 Playwright MCP 直接控制瀏覽器執行測試，不需預先撰寫測試腳本。
 
 涵蓋 3 個場景：完整金流成功路徑、模擬付款失敗、空購物車狀態驗證。
-測試過程以 Xbox Game Bar 或 OBS 螢幕錄製，影片上傳至 YouTube。
+測試過程以 Windows 剪取工具（Snipping Tool）螢幕錄製，影片上傳至 YouTube。
 
 ## 常用指令
 

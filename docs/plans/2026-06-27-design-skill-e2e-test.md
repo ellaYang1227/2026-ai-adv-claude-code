@@ -95,7 +95,7 @@ claude mcp add playwright npx @playwright/mcp@latest
 | 場景二：付款失敗 | 建立訂單 → 訂單詳情 → 模擬付款失敗 | 狀態顯示「付款失敗」 |
 | 場景三：空購物車 | 未登入前往購物車 → 嘗試結帳 | 顯示「購物車是空的」、重導至登入頁 |
 
-Claude 透過 Playwright MCP 工具逐步操作瀏覽器，測試過程以 Xbox Game Bar 或 OBS 螢幕錄製，完成後上傳 YouTube。
+Claude 透過 Playwright MCP 工具逐步操作瀏覽器，測試過程以 Windows 剪取工具（Snipping Tool）螢幕錄製，完成後上傳 YouTube。
 
 ---
 
