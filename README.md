@@ -17,7 +17,7 @@
 
 | 挑戰 | 說明 |
 |------|------|
-| 挑戰一：frontend-design Skill 搭配 Figma MCP 設計各頁面 | 使用 Claude 官方 frontend-design skill 搭配 Figma MCP，產出 7 頁設計稿並存至 `docs/design/`，依設計稿完成前台切版 |
+| 挑戰一：frontend-design Skill 搭配 Figma MCP 設計各頁面 | 透過自訂 `/design` Skill 引用 Claude 官方 frontend-design skill 搭配 Figma MCP，產出 7 頁設計稿並存至 `docs/design/`，依設計稿完成前台切版與 RWD 響應式（含導覽列漢堡選單） |
 | 挑戰二：E2E 測試 Skill 與 Playwright MCP 自動化測試 | 建立 E2E 測試 Skill（`.claude/skills/e2e-payment-test/SKILL.md`），透過 Playwright MCP 讓 Claude 直接控制瀏覽器執行完整金流流程（3 個場景），測試影片上傳至 YouTube |
 
 分支：[homework2-design-e2e](https://github.com/ellaYang1227/2026-ai-adv-claude-code/tree/homework2-design-e2e)

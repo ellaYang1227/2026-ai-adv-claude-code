@@ -15,14 +15,18 @@ Figma 設計稿：[2026-AI-課程 Bloom & Co. 花卉電商](https://www.figma.co
 | Token 名稱 | Hex 值 | 用途 |
 |-----------|--------|------|
 | `deepGreen` | `#1C3329` | Navbar、Footer、主要按鈕、品牌標誌 |
-| `ivory` | `#F5F0E8` | 頁面主背景 |
-| `surface` | `#F0EBE0` | 卡片背景、Sidebar、步驟指示器背景 |
+| `deepGreenHover` | `#254438` | 主要按鈕 hover 狀態 |
+| `ivory` | `#FAFAF7` | 頁面主背景 |
+| `surface` | `#F2F0EB` | 卡片背景、Sidebar、步驟指示器背景 |
 | `clay` | `#C4A882` | 次要強調、裝飾元素 |
-| `sage` | `#899F90` | 商品圖片佔位符、輔助色 |
+| `sage` | `#8FA68E` | 商品圖片佔位符、輔助色 |
 | `text` | `#1A1A1A` | 主要文字 |
-| `textMuted` | `#6B6B6B` | 次要文字、說明文字 |
-| `border` | `#DED9D1` | 分隔線、輸入框邊框 |
+| `textSecondary` | `#6B6B6B` | 次要文字、說明文字 |
+| `textMuted` | `#9A948E` | 輔助文字、placeholder |
+| `border` | `#DEDAD4` | 分隔線、輸入框邊框 |
 | `white` | `#FFFFFF` | 卡片白底、輸入框背景 |
+
+> 以上數值對應 `public/css/input.css` 中 `@theme` 的實際 CSS 變數（切版階段依實際視覺效果微調過，已同步於此）。
 
 > 以上色彩已在 Figma 建立為 Local Variable Collection「Bloom & Co. Tokens」。
 
@@ -75,6 +79,10 @@ Figma 設計稿：[2026-AI-課程 Bloom & Co. 花卉電商](https://www.figma.co
 - 品牌名：Cormorant Garamond Italic 26px（白色）
 - 導覽連結：DM Sans Medium 15px（白色 85% 透明度）
 
+### Navbar（行動版）
+- `md` 斷點以下導覽連結收合為漢堡選單按鈕，點擊展開／收合下拉選單（背景沿用 `deepGreen`）
+- Hero Banner、商品 Grid 等區塊同步依斷點調整為單欄／雙欄排版
+
 ### Footer
 - 背景：`deepGreen`
 - 高度：140px，左右 padding 80px
@@ -97,7 +105,7 @@ Figma 設計稿：[2026-AI-課程 Bloom & Co. 花卉電商](https://www.figma.co
 ### 狀態 Badge（訂單列表）
 | 狀態 | 文字色 | 背景色 |
 |------|--------|--------|
-| 已付款 | `#0F7040` | `#E6F5ED` |
+| 已付款 | `#0F703F` | `#E5F5ED` |
 | 處理中 | `#754F0B` | `#FEF3D8` |
 | 付款失敗 | `#991B1B` | `#FBE7E7` |
 

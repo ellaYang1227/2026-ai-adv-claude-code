@@ -31,7 +31,8 @@
 - 請使用者提供 Figma 設計檔 URL，取出 `fileKey`
 
 ### Step 3 — 透過 frontend-design Skill 搭配 Figma MCP 產出設計稿
-- 呼叫 `/frontend-design`，**不參考現有專案色彩（`public/css/input.css`）**，自行為 Bloom & Co. 規劃全新品牌色彩系統，取得各頁面視覺設計方向
+- 建立自訂 project skill `.claude/skills/design/SKILL.md`（呼叫方式 `/design`），內部引用官方 `frontend-design` skill 的設計流程與 Figma MCP 工具
+- **不參考現有專案色彩（`public/css/input.css`）**，自行為 Bloom & Co. 規劃全新品牌色彩系統，取得各頁面視覺設計方向
 - 在 Figma 中建立色彩系統（Color Styles）
 - 透過 Figma MCP 設計 7 個頁面：
   - 首頁（index）、商品詳情（product-detail）
@@ -52,7 +53,13 @@
 | `views/pages/orders.ejs` | 訂單卡片列表 + 狀態 Badge |
 | `views/pages/order-detail.ejs` | 付款狀態區塊、金流按鈕 |
 | `views/pages/login.ejs` | 登入／註冊表單、Tab 切換 |
-| `views/partials/header.ejs` | 導覽列（含購物車數量徽章） |
+| `views/partials/header.ejs` | 導覽列（含購物車數量徽章、`md` 斷點以下漢堡選單） |
+
+### Step 5 — RWD 響應式與導覽列補強 ✅（計畫外追加）
+切版完成後追加以下項目，未在 Figma 設計稿逐一列出但屬必要的響應式調整：
+- `views/partials/header.ejs`：新增漢堡選單按鈕與行動版下拉選單
+- Hero Banner、商品 Grid 等區塊依斷點調整為單欄／雙欄排版
+- 已同步記錄於 `docs/design/README.md` 的 Navbar（行動版）章節
 
 ---
 
@@ -106,9 +113,9 @@ Claude 透過 Playwright MCP 工具逐步操作瀏覽器，測試過程以 Xbox 
 ---
 
 ## 待完成項目
-- [ ] 安裝 Anthropic 官方 figma 插件（`/plugin install figma`），完成 Figma 帳號 OAuth 授權
-- [ ] 呼叫 `/frontend-design` 搭配 Figma MCP 產出各頁面設計稿
-- [ ] 依設計稿完成 7 個 EJS 檔案切版
+- [x] 安裝 Anthropic 官方 figma 插件（`/plugin install figma`），完成 Figma 帳號 OAuth 授權
+- [x] 呼叫 `/frontend-design` 搭配 Figma MCP 產出各頁面設計稿
+- [x] 依設計稿完成 7 個 EJS 檔案切版（含 header、admin 色彩、RWD 響應式）
 - [ ] 設定 Playwright MCP（`claude mcp add playwright npx @playwright/mcp@latest`）
 - [ ] 呼叫 `/e2e-payment-test` 透過 Playwright MCP 執行測試並截圖
 - [ ] 上傳測試錄影至 YouTube，補上連結至 `README.md`
