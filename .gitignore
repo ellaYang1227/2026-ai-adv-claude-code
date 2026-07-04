@@ -36,5 +36,28 @@ coverage/
 *.tmp
 *.swp
 
+# AI
 .claude/*.local.json
+.claude/agents
+.claude/commands
+.claude/hooks
+.claude/launch.json
+.claude/routines
+.claude/workflows
+
+# AI MCP
+.playwright-mcp/*
+.mcp.json
+
 public/css/output.css
+
+.bash_profile
+.bashrc
+.gitconfig
+.gitmodules
+.idea
+.profile
+.ripgreprc
+.vscode
+.zprofile
+.zshrc
