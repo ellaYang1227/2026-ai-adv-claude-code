@@ -77,6 +77,9 @@ function initializeDatabase() {
   if (!columnNames.includes('paid_at')) {
     db.exec("ALTER TABLE orders ADD COLUMN paid_at TEXT DEFAULT NULL");
   }
+  if (!columnNames.includes('merchant_trade_no')) {
+    db.exec("ALTER TABLE orders ADD COLUMN merchant_trade_no TEXT DEFAULT NULL");
+  }
 
   // Seed data
   seedAdminUser();

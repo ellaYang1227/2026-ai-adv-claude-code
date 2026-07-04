@@ -92,7 +92,7 @@ function verifyCheckMacValue(params, hashKey, hashIV) {
  */
 function toMerchantTradeNo(orderNo) {
   const base = orderNo.replace(/-/g, '');
-  const suffix = crypto.randomBytes(2).toString('base64url').slice(0, 3);
+  const suffix = crypto.randomBytes(2).toString('hex').slice(0, 3);
   return (base + suffix).slice(0, 20);
 }
 
