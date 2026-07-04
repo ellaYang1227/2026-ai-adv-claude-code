@@ -24,7 +24,7 @@
 
 > 🎨 Figma 設計稿：[Bloom & Co. 花卉電商](https://www.figma.com/design/lnRMwFsPubRvnYzRPm2KMS/2026-AI-%E8%AA%B2%E7%A8%8B---Bloom---Co.-%E8%8A%B1%E5%8D%89%E9%9B%BB%E5%95%86?node-id=0-1&t=tammSKjsxx9lTmcD-1)
 >
-> 🎬 E2E 測試錄影：（上傳後補上 YouTube 連結）
+> 🎬 E2E 測試錄影：[YouTube](https://youtu.be/HOjJe89Uc9Q)
 
 ---
 

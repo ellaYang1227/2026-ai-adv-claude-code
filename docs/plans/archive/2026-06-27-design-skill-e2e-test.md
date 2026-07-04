@@ -2,7 +2,7 @@
 
 - **分支**：`homework2-design-e2e`
 - **建立日期**：2026-06-27
-- **狀態**：進行中
+- **狀態**：已完成
 
 ---
 
@@ -118,5 +118,5 @@ Claude 透過 Playwright MCP 工具逐步操作瀏覽器，測試過程以 Windo
 - [x] 依設計稿完成 7 個 EJS 檔案切版（含 header、admin 色彩、RWD 響應式）
 - [x] 設定 Playwright MCP（`claude mcp add playwright npx @playwright/mcp@latest`）
 - [x] 呼叫 `/e2e-payment-test` 透過 Playwright MCP 執行測試並截圖
-- [ ] 上傳測試錄影至 YouTube，補上連結至 `README.md`
-- [ ] 計畫完成後移至 `docs/plans/archive/`
+- [x] 上傳測試錄影至 YouTube，補上連結至 `README.md`
+- [x] 計畫完成後移至 `docs/plans/archive/`
