@@ -469,6 +469,8 @@ router.post('/:id/payment', (req, res) => {
   const baseUrl = process.env.BASE_URL || 'http://localhost:3001';
   const result = ecpayService.buildPaymentFormParams(order, items, baseUrl);
 
+  db.prepare('UPDATE orders SET merchant_trade_no = ? WHERE id = ?').run(result.params.MerchantTradeNo, order.id);
+
   res.json({
     data: result,
     error: null,
@@ -524,8 +526,15 @@ router.post('/:id/check-payment', async (req, res, next) => {
       });
     }
 
-    const merchantTradeNo = ecpayService.toMerchantTradeNo(order.order_no);
-    const tradeInfo = await ecpayService.queryTradeInfo(merchantTradeNo);
+    if (!order.merchant_trade_no) {
+      return res.status(400).json({
+        data: null,
+        error: 'PAYMENT_NOT_INITIATED',
+        message: '尚未發起付款，無法查詢'
+      });
+    }
+
+    const tradeInfo = await ecpayService.queryTradeInfo(order.merchant_trade_no);
 
     // Source: guides/01 §QueryTradeInfo — TradeStatus: 0=未付款, 1=已付款, 10200095=交易未成立
     const tradeStatus = tradeInfo.TradeStatus;
