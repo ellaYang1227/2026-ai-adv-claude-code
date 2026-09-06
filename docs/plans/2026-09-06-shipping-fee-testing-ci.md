@@ -121,7 +121,10 @@
 - [x] 修正：`test.yml` job 層級加上 `env: JWT_SECRET: ci-test-jwt-secret`（測試專用假密鑰），本機用 `JWT_SECRET=ci-test-jwt-secret npx vitest run` 模擬 CI 環境驗證 unit + integration 測試皆通過
 - [x]（順手修正）`actions/checkout`、`actions/setup-node` 從 `@v4` 升級到 `@v7`，解決 workflow log 中「Node.js 20 執行環境即將棄用」的警告
 - [x] Commit（`d024797`）
-- [ ] 再次 push，確認這次 GitHub Actions 真正跑成功
+- [x] 你 push 後回報另一個 warning：`Post Checkout repository` 步驟出現 `fatal: No url found for submodule path '.claude/skills/ecpay' in .gitmodules`（exit code 128，不影響測試結果，但 log 有紅字警告）
+- [x] **根因**：`.claude/skills/ecpay` 早在舊的 `2ac47ec`（合併 homework1-ai-agent）就被誤記成 git submodule（mode `160000`），但專案沒有對應的 `.gitmodules` 定義其 URL；`main` 分支也有同樣問題。確認該路徑內容是官方 `ECPay/ECPay-API-Skill` 公開 repo 的乾淨 clone（無未提交變更，commit 與 gitlink 記錄一致），刪除巢狀 `.git`（你手動執行 `rm -rf`）後改為一般追蹤檔案，比照同目錄下的 `design`、`e2e-payment-test`
+- [x] Commit（`62a2366`）
+- [ ] 再次 push，確認這次 GitHub Actions 真正跑成功（無失敗測試、無 submodule 警告）
 
 ### 人工驗收 Checkpoint
 - [ ] 🔲 **通知你**：請至 GitHub Actions 頁面確認 workflow 執行成功（Unit Test、Integration Test 兩個步驟皆綠燈），並確認 `docs/ci/` 截圖已存檔
