@@ -56,26 +56,45 @@
           </div>
           <div>
             <label class="block text-xs font-medium text-text-primary mb-1.5 uppercase tracking-wide">配送方式</label>
-            <div class="flex gap-4 text-sm">
-              <label class="flex items-center gap-1.5">
-                <input type="radio" value="home" v-model="form.deliveryMethod" />
-                宅配（NT$ 120，滿 NT$ 1,500 免運）
+            <div class="grid grid-cols-2 gap-3">
+              <label
+                class="flex items-center gap-2 border border-bloom-border rounded-[2px] px-3 py-2.5 text-sm cursor-pointer transition-colors has-[:checked]:border-bloom-green has-[:checked]:bg-bloom-surface">
+                <input type="radio" value="home" v-model="form.deliveryMethod" class="accent-bloom-green" />
+                <span>
+                  <span class="block text-text-primary">宅配</span>
+                  <span class="block text-text-muted text-xs mt-0.5">NT$ 120，滿 NT$ 1,500 免運</span>
+                </span>
               </label>
-              <label class="flex items-center gap-1.5">
-                <input type="radio" value="store" v-model="form.deliveryMethod" />
-                超商取貨（NT$ 60）
+              <label
+                class="flex items-center gap-2 border border-bloom-border rounded-[2px] px-3 py-2.5 text-sm cursor-pointer transition-colors has-[:checked]:border-bloom-green has-[:checked]:bg-bloom-surface">
+                <input type="radio" value="store" v-model="form.deliveryMethod" class="accent-bloom-green" />
+                <span>
+                  <span class="block text-text-primary">超商取貨</span>
+                  <span class="block text-text-muted text-xs mt-0.5">NT$ 60</span>
+                </span>
               </label>
             </div>
           </div>
-          <div class="flex gap-4 text-sm">
-            <label class="flex items-center gap-1.5">
-              <input type="checkbox" v-model="form.isRemoteArea" />
-              偏遠地區（加收 NT$ 200）
-            </label>
-            <label class="flex items-center gap-1.5">
-              <input type="checkbox" v-model="form.isRushDelivery" />
-              當日急件（加收 NT$ 250）
-            </label>
+          <div>
+            <label class="block text-xs font-medium text-text-primary mb-1.5 uppercase tracking-wide">加收項目（可複選）</label>
+            <div class="grid grid-cols-2 gap-3">
+              <label
+                class="flex items-center gap-2 border border-bloom-border rounded-[2px] px-3 py-2.5 text-sm cursor-pointer transition-colors has-[:checked]:border-bloom-green has-[:checked]:bg-bloom-surface">
+                <input type="checkbox" v-model="form.isRemoteArea" class="accent-bloom-green" />
+                <span>
+                  <span class="block text-text-primary">偏遠地區</span>
+                  <span class="block text-text-muted text-xs mt-0.5">加收 NT$ 200</span>
+                </span>
+              </label>
+              <label
+                class="flex items-center gap-2 border border-bloom-border rounded-[2px] px-3 py-2.5 text-sm cursor-pointer transition-colors has-[:checked]:border-bloom-green has-[:checked]:bg-bloom-surface">
+                <input type="checkbox" v-model="form.isRushDelivery" class="accent-bloom-green" />
+                <span>
+                  <span class="block text-text-primary">當日急件</span>
+                  <span class="block text-text-muted text-xs mt-0.5">加收 NT$ 250</span>
+                </span>
+              </label>
+            </div>
           </div>
         </div>
 
