@@ -234,9 +234,12 @@ npm run test:e2e
 npm run test:postman
 ```
 
-需先手動啟動專案。此指令會重新產生 `openapi.json`，轉換成 `postman/collection.json`（不納入版控，可重新產生），並用 Newman 執行。Collection 使用 `{{baseUrl}}`（預設 `http://localhost:3001`）、`token`、`sessionId` 三個變數，登入成功後自動把 JWT 存入 `token`，其餘需要登入的請求自動帶上 Bearer Token。
+需先手動啟動專案。此指令會重新產生 `openapi.json`，轉換成 `postman/collection.json` 與 `postman/environment.json`（皆不納入版控，可重新產生），並用 Newman 搭配這兩個檔案執行。
 
-若只想重新產生 `postman/collection.json`（例如要匯入 Postman GUI 查看，不需要透過 Newman 執行），可單獨執行：
+- **`postman/collection.json`**：包含所有 API 請求，並帶有 `baseUrl`、`token`、`sessionId` 三個 Collection Variables。登入成功後自動把 JWT 存入 `token`，其餘需要登入的請求自動帶上 Bearer Token。
+- **`postman/environment.json`**：獨立的 Postman Environment，只放 `baseUrl`（預設 `http://localhost:3001`）。之所以只放 `baseUrl`，是因為 `token`／`sessionId` 是執行期間才動態產生的值，若也放進 Environment，空值會因 Postman 變數優先權（Environment > Collection Variables）蓋掉登入後存入的 token；若要打不同主機（例如 staging），修改這個檔案裡的 `baseUrl` 即可，不需要改程式碼或 collection。
+
+若只想重新產生這兩個檔案（例如要匯入 Postman GUI 查看，不需要透過 Newman 執行），可單獨執行：
 
 ```bash
 npm run postman
@@ -254,7 +257,7 @@ npm run postman
 | `npm test` / `npm run test:unit` | 執行 Vitest 單元測試套件 |
 | `npm run test:integration` | 執行 Integration Test（獨立暫存 DB） |
 | `npm run test:e2e` | 執行 Playwright 自動化 E2E 測試 |
-| `npm run postman` | 僅產生 `postman/collection.json` |
+| `npm run postman` | 僅產生 `postman/collection.json` 與 `postman/environment.json` |
 | `npm run test:postman` | 產生並執行 Postman Collection（Newman） |
 
 ## 專案文件

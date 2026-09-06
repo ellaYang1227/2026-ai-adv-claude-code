@@ -89,7 +89,8 @@
 ### AI 執行項目 — Postman Collection
 - [x] 新增 devDependency `openapi-to-postmanv2`、`newman`
 - [x] 新增 `scripts/generate-postman.js`：`openapi.json` → `postman/collection.json`，補上 `token`/`sessionId` 變數（`baseUrl` 由 servers 自動產生）、將轉換工具預設的 `bearerToken` 變數統一改名為 `token`、登入請求換成真實種子帳號並加上自動存 token 的 test script、把登入分支移到整個 collection 最前面執行確保後續請求都能拿到 token
-- [x] `package.json` 新增 `"postman"`（僅產生 collection）與 `"test:postman": "npm run openapi && npm run postman && newman run postman/collection.json --env-var baseUrl=http://localhost:3001"`
+- [x]（人工回饋後補做）另外輸出獨立的 `postman/environment.json`（只放 `baseUrl`，`token`/`sessionId` 維持在 Collection Variables，避免 Environment 空值蓋掉登入後存入的 token），`test:postman` 改用 `newman run postman/collection.json -e postman/environment.json`
+- [x] `package.json` 新增 `"postman"`（僅產生 collection + environment）與 `"test:postman"`（openapi → postman → newman run）
 
 ### 收尾
 - [x] `.gitignore` 新增 `postman/collection.json`、`playwright-report/`、`test-results/`

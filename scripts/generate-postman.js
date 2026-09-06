@@ -1,10 +1,12 @@
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 const Converter = require('openapi-to-postmanv2');
 
 const openapiPath = path.join(__dirname, '..', 'openapi.json');
 const outputDir = path.join(__dirname, '..', 'postman');
-const outputPath = path.join(outputDir, 'collection.json');
+const collectionOutputPath = path.join(outputDir, 'collection.json');
+const environmentOutputPath = path.join(outputDir, 'environment.json');
 
 function walk(node, fn) {
   fn(node);
@@ -108,7 +110,21 @@ Converter.convert({ type: 'file', data: openapiPath }, {}, (err, result) => {
     console.warn('警告：找不到登入端點，未加入自動儲存 token 的 test script');
   }
 
+  // 獨立的 Postman Environment：只放 baseUrl（真正該隨環境切換的值）。
+  // token/sessionId 是執行期間動態產生的值，維持放在 Collection Variables，
+  // 避免 Environment 的空值（優先權高於 Collection Variables）蓋掉登入後存入的 token。
+  const environment = {
+    id: crypto.randomUUID(),
+    name: 'Bloom & Co. Local',
+    values: [
+      { key: 'baseUrl', value: 'http://localhost:3001', type: 'default', enabled: true },
+    ],
+    _postman_variable_scope: 'environment',
+  };
+
   fs.mkdirSync(outputDir, { recursive: true });
-  fs.writeFileSync(outputPath, JSON.stringify(collection, null, 2));
-  console.log(`Postman collection 已產生：${path.relative(process.cwd(), outputPath)}`);
+  fs.writeFileSync(collectionOutputPath, JSON.stringify(collection, null, 2));
+  fs.writeFileSync(environmentOutputPath, JSON.stringify(environment, null, 2));
+  console.log(`Postman collection 已產生：${path.relative(process.cwd(), collectionOutputPath)}`);
+  console.log(`Postman environment 已產生：${path.relative(process.cwd(), environmentOutputPath)}`);
 });

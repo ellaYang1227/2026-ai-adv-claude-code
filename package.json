@@ -13,7 +13,7 @@
     "test:integration": "vitest run --config vitest.integration.config.js",
     "test:e2e": "playwright test",
     "postman": "node scripts/generate-postman.js",
-    "test:postman": "npm run openapi && npm run postman && newman run postman/collection.json --env-var baseUrl=http://localhost:3001"
+    "test:postman": "npm run openapi && npm run postman && newman run postman/collection.json -e postman/environment.json"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",

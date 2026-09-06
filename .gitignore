@@ -33,8 +33,9 @@ npm-debug.log*
 # Test coverage
 coverage/
 
-# Test derivatives（自動產生的 Postman collection、Playwright 報告與截圖）
+# Test derivatives（自動產生的 Postman collection/environment、Playwright 報告與截圖）
 postman/collection.json
+postman/environment.json
 playwright-report/
 test-results/
 

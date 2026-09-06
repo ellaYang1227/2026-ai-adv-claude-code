@@ -177,15 +177,16 @@ it('should deny access to regular user', async () => {
 - **`tests/e2e/checkout-payment.spec.js`**：登入（`admin@hexschool.com` / `12345678`）→ 加入購物車 → 結帳 → 前往綠界付款頁 → 選擇「網路 ATM」→「台灣土地銀行」→ 前往付款 → 關閉提示視窗 → 在土地銀行測試頁點擊 Save → 確認付款成功 → 返回商店 → 驗證訂單狀態為「已付款」→ 存下成功畫面截圖至 `test-results/e2e/`（不納入版控）。
 - **已知的第三方頁面不穩定性**：綠界測試站（`payment-stage.ecpay.com.tw`）頁首廣告區塊偶爾延遲載入，會讓付款方式分頁的選取狀態被重置回「信用卡」。腳本對「點擊網路ATM分頁 → 確認選擇銀行欄位可見」這段加了 `expect(...).toPass()` 重試邏輯因應。
 
-## Postman Collection（`postman/collection.json`，不納入版控）
+## Postman Collection（`postman/collection.json` + `postman/environment.json`，皆不納入版控）
 
-執行：`npm run test:postman`（內部依序執行 `npm run openapi` → `node scripts/generate-postman.js` → `newman run`）。
+執行：`npm run test:postman`（內部依序執行 `npm run openapi` → `npm run postman` → `newman run postman/collection.json -e postman/environment.json`）。
 
 - **產生方式**：`scripts/generate-postman.js` 用 `openapi-to-postmanv2` 把 `openapi.json` 轉成 Postman Collection，並做以下後處理：
-  - 補上 `token`、`sessionId` 兩個 collection 變數（`baseUrl` 由 `openapi.json` 的 `servers[0].url` 自動產生，預設 `http://localhost:3001`）
+  - 補上 `token`、`sessionId` 兩個 Collection Variables（`baseUrl` 由 `openapi.json` 的 `servers[0].url` 自動產生，預設 `http://localhost:3001`）
   - 把轉換工具預設產生的 bearer 變數名稱（`bearerToken`）統一改為 `token`，讓所有需要登入的請求都用 `{{token}}` 帶 Bearer Token
   - 把「登入」請求的 body 換成專案種子帳號（`admin@hexschool.com` / `12345678`），並加上 test script：登入成功後把 `data.token` 存進 `pm.collectionVariables`
   - 把登入請求所在的分支搬到整個 collection 最前面執行（newman 依 `item` 陣列順序做深度優先執行），確保後續請求都能拿到剛登入的 token
+  - 另外輸出一份獨立的 `postman/environment.json`，**只放 `baseUrl`**：`token`／`sessionId` 是執行期間動態產生的值，故意不放進 Environment，避免 Postman 變數優先權（Environment > Collection Variables）讓 Environment 裡的空值蓋掉登入後存入的 token。要切換測試目標主機（如 staging）時，改這個檔案的 `baseUrl` 即可
 - **只需登入一次**：因為 admin 帳號本身具備管理員權限，登入一次即可讓一般會員 API 與後台管理 API 都成功通過驗證。
 - **路徑／內文參數**：轉換工具產生的是通用範例值（如 `<string>`），呼叫需要真實 ID 的端點（如訂單詳情、商品詳情）前，建議先從對應的列表端點取得真實 ID 再手動帶入。
 
