@@ -50,6 +50,8 @@ test-results/
 .claude/launch.json
 .claude/routines
 .claude/workflows
+.claude/loop.md
+.claude/output-styles
 
 # AI MCP
 .playwright-mcp/*
