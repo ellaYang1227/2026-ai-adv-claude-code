@@ -1,5 +1,7 @@
 # 2026-ai-adv-claude-code
 
+[![Test](https://github.com/ellaYang1227/2026-ai-adv-claude-code/actions/workflows/test.yml/badge.svg?branch=homework3-shipping-testing)](https://github.com/ellaYang1227/2026-ai-adv-claude-code/actions/workflows/test.yml)
+
 > [六角] 2026 AI 開發進化營 — 課程作業，採用 Claude Code 進行 AI 開發協作
 
 ## [作業1] AI Agent 協作
@@ -34,7 +36,7 @@
 |------|------|
 | 挑戰一：配送費用模組與 Unit Test | 新增 `src/utils/shipping.js` 運費計算模組（宅配／超商取貨、滿額免運、偏遠地區、當日急件），整合進建立訂單流程並補上結帳頁配送選項，8 個 Unit Test 案例 |
 | 挑戰二：Integration Test、E2E Test 與 Postman Collection | 建立獨立暫存 DB 的 Integration Test（訂單流程、運費、庫存正確性）、Playwright 自動化 E2E 測試（登入→結帳→綠界網路 ATM 付款）、`openapi-to-postmanv2` + Newman 產生並執行 Postman Collection |
-| 挑戰三：GitHub Actions 自動化測試 | 待開始 |
+| 挑戰三：GitHub Actions 自動化測試 | 新增 `.github/workflows/test.yml`，於 push/PR 時自動執行 Unit Test 與 Integration Test |
 
 分支：[homework3-shipping-testing](https://github.com/ellaYang1227/2026-ai-adv-claude-code/tree/homework3-shipping-testing)
 
@@ -269,3 +271,5 @@ npm run postman
 | [docs/FEATURES.md](./docs/FEATURES.md) | 功能列表與完成狀態 |
 | [docs/TESTING.md](./docs/TESTING.md) | 測試規範與指南 |
 | [docs/CHANGELOG.md](./docs/CHANGELOG.md) | 更新日誌 |
+| [docs/ci/README.md](./docs/ci/README.md) | GitHub Actions CI 說明與執行紀錄 |
+| [docs/ci/README.md](./docs/ci/README.md) | GitHub Actions CI 說明與執行紀錄 |
