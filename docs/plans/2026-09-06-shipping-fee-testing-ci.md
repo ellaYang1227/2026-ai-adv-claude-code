@@ -104,8 +104,8 @@
   - `0ee576c` 新增獨立的 `postman/environment.json`（只放 `baseUrl`），`test:postman` 改用 `newman -e postman/environment.json` 執行
 
 ### 人工驗收 Checkpoint
-- [ ] 🔲 **通知你**：請本機啟動專案（`npm start`）後，依序手動執行 `npm run test:integration`、`npm run test:e2e`、`npm run test:postman`，確認皆綠燈通過，並檢查 `tests/e2e/` 截圖與 Postman 執行結果是否符合預期
-- [ ] 🔲 **等待你確認沒問題**後才開始挑戰三
+- [x] 🔲 **通知你**：請本機啟動專案（`npm start`）後，依序手動執行 `npm run test:integration`、`npm run test:e2e`、`npm run test:postman`，確認皆綠燈通過，並檢查 `tests/e2e/` 截圖與 Postman 執行結果是否符合預期
+- [x] 🔲 **你已完成人工測試並確認沒問題**，開始挑戰三
 
 ---
 
@@ -129,10 +129,10 @@
 
 - [x] 挑戰一：Shipping 模組、DB 遷移、訂單流程整合、前端、文件、Unit Test
 - [x] 挑戰一：人工驗收（瀏覽器實際下單測試）
-- [ ] 挑戰二：DB 可隔離化、Integration Test
-- [ ] 挑戰二：Playwright E2E Test
-- [ ] 挑戰二：Postman Collection + Newman
-- [ ] 挑戰二：人工驗收（本機執行三種測試指令）
+- [x] 挑戰二：DB 可隔離化、Integration Test
+- [x] 挑戰二：Playwright E2E Test
+- [x] 挑戰二：Postman Collection + Newman
+- [x] 挑戰二：人工驗收（本機執行三種測試指令）
 - [ ] 挑戰三：GitHub Actions workflow
 - [ ] 挑戰三：人工驗收（GitHub Actions 執行成功截圖）
 - [ ] 計畫完成後移至 `docs/plans/archive/`
