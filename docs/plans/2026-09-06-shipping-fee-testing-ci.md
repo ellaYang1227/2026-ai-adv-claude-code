@@ -74,28 +74,29 @@
 ## 挑戰二：Integration Test、E2E Test 與 Postman Collection
 
 ### AI 執行項目 — Integration Test
-- [ ] `src/database.js`：`dbPath` 改為 `process.env.DATABASE_PATH || 現有預設路徑`（不改變預設行為，僅新增覆寫入口）
-- [ ] `vitest.config.js`：`test.include` 限定在 `tests/*.test.js`，避免掃到 `tests/integration/`、`tests/e2e/`
-- [ ] 新增 `vitest.integration.config.js` 與 `tests/integration/setup.js`：每個測試檔案使用系統暫存目錄下獨立的 sqlite 檔，`afterAll` 清除該檔案與 `-wal`/`-shm`
-- [ ] 新增 `tests/integration/order-flow.integration.test.js`：登入會員 → 取商品 → 加入購物車 → 建立含配送資訊的訂單 → 驗證 HTTP 狀態碼／回應格式／訂單與訂單項目正確性／運費與總額正確性／庫存正確扣除／失敗情境不留下不完整訂單／失敗情境不誤扣庫存
-- [ ] `package.json` 新增 `"test:integration": "vitest run --config vitest.integration.config.js"`
+- [x] `src/database.js`：`dbPath` 改為 `process.env.DATABASE_PATH || 現有預設路徑`（不改變預設行為，僅新增覆寫入口）
+- [x] `vitest.config.js`：`test.include` 限定在 `tests/*.test.js`，避免掃到 `tests/integration/`、`tests/e2e/`
+- [x] 新增 `vitest.integration.config.js` 與 `tests/integration/setup.js`：每個測試檔案使用系統暫存目錄下獨立的 sqlite 檔，`afterAll` 清除該檔案與 `-wal`/`-shm`
+- [x] 新增 `tests/integration/order-flow.integration.test.js`：登入會員 → 取商品 → 加入購物車 → 建立含配送資訊的訂單 → 驗證 HTTP 狀態碼／回應格式／訂單與訂單項目正確性／運費與總額正確性／庫存正確扣除／失敗情境不留下不完整訂單／失敗情境不誤扣庫存（3 個測試案例）
+- [x] `package.json` 新增 `"test:integration": "vitest run --config vitest.integration.config.js"`
 
 ### AI 執行項目 — E2E Test
-- [ ] 新增 devDependency `@playwright/test`，新增 `playwright.config.js`（`baseURL: http://localhost:3001`，不設定 `webServer`，需你先手動啟動專案）
-- [ ] 新增 `tests/e2e/checkout-payment.spec.js`，複用 `.claude/skills/e2e-payment-test/SKILL.md` 已驗證過的綠界測試流程：登入 → 加入購物車 → 結帳填寫配送資料 → 建立訂單 → 綠界頁選「網路 ATM」→「台灣土地銀行」→「前往付款」→ 關閉提示視窗 → 測試頁點擊 Save → 等待付款成功 → 點擊「返回商店」→ 驗證訂單狀態為「已付款」→ 成功畫面截圖
-- [ ] `package.json` 新增 `"test:e2e": "playwright test"`
+- [x] 新增 devDependency `@playwright/test`，新增 `playwright.config.js`（`baseURL: http://localhost:3001`，不設定 `webServer`，需你先手動啟動專案），並在本機安裝 Chromium 瀏覽器
+- [x] 先透過 Playwright MCP 實際走過一次網路ATM／台灣土地銀行付款流程確認正確步驟，再寫成 `tests/e2e/checkout-payment.spec.js`：登入 → 加入購物車 → 結帳填寫配送資料 → 建立訂單 → 綠界頁選「網路 ATM」→「台灣土地銀行」→「前往付款」→ 關閉提示視窗 → 測試頁點擊 Save → 等待付款成功 → 點擊「返回商店」→ 驗證訂單狀態為「已付款」→ 成功畫面截圖
+- [x] 排除綠界測試站頁首廣告造成的分頁狀態間歇性重置問題，加上重試邏輯（`expect(...).toPass()`）確保穩定通過
+- [x] `package.json` 新增 `"test:e2e": "playwright test"`
 
 ### AI 執行項目 — Postman Collection
-- [ ] 新增 devDependency `openapi-to-postmanv2`、`newman`
-- [ ] 新增 `scripts/generate-postman.js`：`openapi.json` → `postman/collection.json`，加入 `baseUrl`/`token`/`sessionId` 變數、登入端點自動存 token 的 test script、需驗證端點自動帶 Bearer Token 的 pre-request script
-- [ ] `package.json` 新增 `"test:postman": "npm run openapi && node scripts/generate-postman.js && newman run postman/collection.json --env-var baseUrl=http://localhost:3001"`
+- [x] 新增 devDependency `openapi-to-postmanv2`、`newman`
+- [x] 新增 `scripts/generate-postman.js`：`openapi.json` → `postman/collection.json`，補上 `token`/`sessionId` 變數（`baseUrl` 由 servers 自動產生）、將轉換工具預設的 `bearerToken` 變數統一改名為 `token`、登入請求換成真實種子帳號並加上自動存 token 的 test script、把登入分支移到整個 collection 最前面執行確保後續請求都能拿到 token
+- [x] `package.json` 新增 `"postman"`（僅產生 collection）與 `"test:postman": "npm run openapi && npm run postman && newman run postman/collection.json --env-var baseUrl=http://localhost:3001"`
 
 ### 收尾
-- [ ] `.gitignore` 新增 `postman/collection.json`、`playwright-report/`、`test-results/`
-- [ ] 確認 `npm run test:unit`、`npm run test:integration`、`npm run test:e2e`、`npm run test:postman` 皆可正常執行
-- [ ] 更新 `README.md`「測試」章節：補上 Integration/E2E/Postman 三種新測試方式與指令說明
-- [ ] 更新 `docs/TESTING.md`
-- [ ] Commit
+- [x] `.gitignore` 新增 `postman/collection.json`、`playwright-report/`、`test-results/`
+- [x] 確認 `npm run test:unit`（56 通過）、`npm run test:integration`（3 通過）、`npm run test:e2e`（1 通過，穩定重跑兩次皆過）、`npm run test:postman`（21 requests、0 failed，含 admin 端點皆正確帶上 Bearer Token）皆可正常執行
+- [x] 更新 `README.md`「測試」章節：補上 Integration/E2E（自動化）/Postman 三種新測試方式與指令說明，並將原本的 E2E 手動探索小節重新命名區隔
+- [x] 更新 `docs/TESTING.md`：新增測試檔案一覽（shipping/ecpay）、Integration Test／E2E Test／Postman Collection 三個新章節、常見陷阱補充資料庫共用僅限 Unit Test
+- [x] Commit（依子項目拆成 4 個 commit：`80c9b2c` Integration Test、`1c1b7e8` E2E Test、`7a2d0dd` Postman Collection、`5c891f6` 文件更新）
 
 ### 人工驗收 Checkpoint
 - [ ] 🔲 **通知你**：請本機啟動專案（`npm start`）後，依序手動執行 `npm run test:integration`、`npm run test:e2e`、`npm run test:postman`，確認皆綠燈通過，並檢查 `tests/e2e/` 截圖與 Postman 執行結果是否符合預期
