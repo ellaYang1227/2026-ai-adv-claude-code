@@ -112,10 +112,11 @@
 ## 挑戰三：GitHub Actions 自動化測試
 
 ### AI 執行項目
-- [ ] 新增 `.github/workflows/test.yml`：`push`／`pull_request` 觸發，步驟為 checkout → setup-node（含 npm cache）→ `npm ci` → `npm run test:unit` → `npm run test:integration`（不執行 E2E、不啟動服務）
-- [ ] 新建 `docs/ci/` 目錄，放置 GitHub Actions 執行成功的截圖
-- [ ] 更新 `README.md`：新增 CI 徽章或說明段落，連結到 workflow
-- [ ] Commit 並 push 觸發 workflow
+- [x] 新增 `.github/workflows/test.yml`：`push`／`pull_request` 觸發，步驟為 checkout → setup-node（Node 20 + npm cache）→ `npm ci` → `npm run test:unit` → `npm run test:integration`（不執行 E2E、不啟動服務）
+- [x] 新建 `docs/ci/README.md`，記錄 workflow 內容，預留截圖位置（`docs/ci/screenshots/`，待 push 後於 GitHub Actions 頁面確認成功再補上）
+- [x] 更新 `README.md`：新增 CI 徽章（連結 `homework3-shipping-testing` 分支的 workflow 狀態）與挑戰三說明段落
+- [x] Commit（`e576675`）
+- [ ] Push 觸發 workflow（**需你確認後才執行**，push 屬於會影響遠端共享狀態的動作）
 
 ### 人工驗收 Checkpoint
 - [ ] 🔲 **通知你**：請至 GitHub Actions 頁面確認 workflow 執行成功（Unit Test、Integration Test 兩個步驟皆綠燈），並確認 `docs/ci/` 截圖已存檔
