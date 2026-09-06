@@ -13,6 +13,16 @@ createApp({
       }, 0);
     });
 
+    // 購物車階段尚未選擇配送方式，先以宅配（無偏遠地區／當日急件）試算運費，
+    // 與 src/utils/shipping.js 規則一致，實際金額以結帳頁與後端回傳為準
+    const shippingFee = computed(function () {
+      return total.value >= 1500 ? 0 : 120;
+    });
+
+    const orderTotal = computed(function () {
+      return total.value + shippingFee.value;
+    });
+
     async function loadCart() {
       loading.value = true;
       try {
@@ -68,7 +78,7 @@ createApp({
     });
 
     return {
-      items, loading, total, confirmVisible,
+      items, loading, total, shippingFee, orderTotal, confirmVisible,
       updateQuantity, confirmDelete, handleDelete, goCheckout
     };
   }
