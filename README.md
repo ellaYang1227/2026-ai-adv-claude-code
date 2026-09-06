@@ -236,6 +236,12 @@ npm run test:postman
 
 需先手動啟動專案。此指令會重新產生 `openapi.json`，轉換成 `postman/collection.json`（不納入版控，可重新產生），並用 Newman 執行。Collection 使用 `{{baseUrl}}`（預設 `http://localhost:3001`）、`token`、`sessionId` 三個變數，登入成功後自動把 JWT 存入 `token`，其餘需要登入的請求自動帶上 Bearer Token。
 
+若只想重新產生 `postman/collection.json`（例如要匯入 Postman GUI 查看，不需要透過 Newman 執行），可單獨執行：
+
+```bash
+npm run postman
+```
+
 ## 常用指令
 
 | 指令 | 說明 |
@@ -248,6 +254,7 @@ npm run test:postman
 | `npm test` / `npm run test:unit` | 執行 Vitest 單元測試套件 |
 | `npm run test:integration` | 執行 Integration Test（獨立暫存 DB） |
 | `npm run test:e2e` | 執行 Playwright 自動化 E2E 測試 |
+| `npm run postman` | 僅產生 `postman/collection.json` |
 | `npm run test:postman` | 產生並執行 Postman Collection（Newman） |
 
 ## 專案文件
