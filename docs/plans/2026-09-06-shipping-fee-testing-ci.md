@@ -116,7 +116,12 @@
 - [x] 新建 `docs/ci/README.md`，記錄 workflow 內容，預留截圖位置（`docs/ci/screenshots/`，待 push 後於 GitHub Actions 頁面確認成功再補上）
 - [x] 更新 `README.md`：新增 CI 徽章（連結 `homework3-shipping-testing` 分支的 workflow 狀態）與挑戰三說明段落
 - [x] Commit（`e576675`）
-- [ ] Push 觸發 workflow（**需你確認後才執行**，push 屬於會影響遠端共享狀態的動作）
+- [x] 你 push 觸發 workflow 後回報失敗：`tests/auth.test.js` 註冊/登入回 500，連鎖導致所有需要 token 的測試失敗
+- [x] **根因**：`.env` 未納入版控，本機能跑是因為有 `.env` 提供 `JWT_SECRET`，CI 環境沒有這個檔案，`process.env.JWT_SECRET` 為 `undefined`，`jwt.sign()` 丟例外
+- [x] 修正：`test.yml` job 層級加上 `env: JWT_SECRET: ci-test-jwt-secret`（測試專用假密鑰），本機用 `JWT_SECRET=ci-test-jwt-secret npx vitest run` 模擬 CI 環境驗證 unit + integration 測試皆通過
+- [x]（順手修正）`actions/checkout`、`actions/setup-node` 從 `@v4` 升級到 `@v7`，解決 workflow log 中「Node.js 20 執行環境即將棄用」的警告
+- [x] Commit（`d024797`）
+- [ ] 再次 push，確認這次 GitHub Actions 真正跑成功
 
 ### 人工驗收 Checkpoint
 - [ ] 🔲 **通知你**：請至 GitHub Actions 頁面確認 workflow 執行成功（Unit Test、Integration Test 兩個步驟皆綠燈），並確認 `docs/ci/` 截圖已存檔
