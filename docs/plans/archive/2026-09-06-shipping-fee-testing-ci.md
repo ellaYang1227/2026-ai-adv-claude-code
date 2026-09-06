@@ -2,7 +2,7 @@
 
 - **分支**：`homework3-shipping-testing`
 - **建立日期**：2026-09-06
-- **狀態**：進行中（挑戰三待你最終確認）
+- **狀態**：已完成
 
 ---
 
@@ -129,7 +129,7 @@
 
 ### 人工驗收 Checkpoint
 - [x] 🔲 **通知你**：請至 GitHub Actions 頁面確認 workflow 執行成功（Unit Test、Integration Test 兩個步驟皆綠燈），並確認 `docs/ci/` 截圖已存檔
-- [ ] 🔲 **等待你最終確認**，作業三計畫完成
+- [x] 🔲 **你已最終確認**，作業三計畫完成
 
 ---
 
@@ -143,6 +143,6 @@
 - [x] 挑戰二：Playwright E2E Test
 - [x] 挑戰二：Postman Collection + Newman
 - [x] 挑戰二：人工驗收（本機執行三種測試指令）
-- [ ] 挑戰三：GitHub Actions workflow
-- [ ] 挑戰三：人工驗收（GitHub Actions 執行成功截圖）
-- [ ] 計畫完成後移至 `docs/plans/archive/`
+- [x] 挑戰三：GitHub Actions workflow
+- [x] 挑戰三：人工驗收（GitHub Actions 執行成功截圖）
+- [x] 計畫完成後移至 `docs/plans/archive/`
