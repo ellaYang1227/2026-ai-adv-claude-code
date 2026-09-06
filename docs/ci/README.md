@@ -14,4 +14,6 @@ Workflow 定義於 [`.github/workflows/test.yml`](../../.github/workflows/test.y
 
 ## 執行成功截圖
 
-> 待推送分支並於 GitHub Actions 頁面確認執行成功後，截圖存放於 `docs/ci/screenshots/`。
+![Workflow 執行成功](./screenshots/workflow-run-success.png)
+
+`Unit and integration tests` job 全綠燈，56 個 Unit Test 與 3 個 Integration Test 皆通過。
