@@ -33,6 +33,11 @@ npm-debug.log*
 # Test coverage
 coverage/
 
+# Test derivatives（自動產生的 Postman collection、Playwright 報告與截圖）
+postman/collection.json
+playwright-report/
+test-results/
+
 # Temp files
 *.tmp
 *.swp

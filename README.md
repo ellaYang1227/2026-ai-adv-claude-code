@@ -33,7 +33,7 @@
 | 挑戰 | 說明 |
 |------|------|
 | 挑戰一：配送費用模組與 Unit Test | 新增 `src/utils/shipping.js` 運費計算模組（宅配／超商取貨、滿額免運、偏遠地區、當日急件），整合進建立訂單流程並補上結帳頁配送選項，8 個 Unit Test 案例 |
-| 挑戰二：Integration Test、E2E Test 與 Postman Collection | 進行中 |
+| 挑戰二：Integration Test、E2E Test 與 Postman Collection | 建立獨立暫存 DB 的 Integration Test（訂單流程、運費、庫存正確性）、Playwright 自動化 E2E 測試（登入→結帳→綠界網路 ATM 付款）、`openapi-to-postmanv2` + Newman 產生並執行 Postman Collection |
 | 挑戰三：GitHub Actions 自動化測試 | 待開始 |
 
 分支：[homework3-shipping-testing](https://github.com/ellaYang1227/2026-ai-adv-claude-code/tree/homework3-shipping-testing)
@@ -203,14 +203,38 @@ npm run dev:css
 npm run test:unit
 ```
 
-使用 Vitest + supertest，按固定順序執行（shipping → ecpay → auth → products → cart → orders → adminProducts → adminOrders），共 56 個測試案例。
+使用 Vitest + supertest，按固定順序執行（shipping → ecpay → auth → products → cart → orders → adminProducts → adminOrders），共 56 個測試案例。與專案的 `database.sqlite` 共用資料。
 
-### E2E 測試（Playwright MCP）
+### 整合測試（Vitest + Supertest）
+
+```bash
+npm run test:integration
+```
+
+每次執行會在系統暫存目錄建立獨立的 SQLite 檔案（不影響 `database.sqlite`），結束後自動清除。涵蓋完整訂單流程：登入 → 加入購物車 → 建立訂單（含運費計算）→ 驗證庫存扣除，以及庫存不足／空購物車等失敗情境不留下髒資料。
+
+### E2E 測試 — 自動化（Playwright Test）
+
+```bash
+npm run test:e2e
+```
+
+需先手動啟動專案（`npm start` 或 `npm run dev:server`），測試不會另外啟動伺服器。腳本會實際登入、加入購物車、結帳、導向綠界測試站，選擇「網路 ATM」→「台灣土地銀行」完成付款，驗證訂單狀態變為「已付款」，並存下成功畫面截圖（`test-results/e2e/`，不納入版控）。
+
+### E2E 測試 — 手動探索（Playwright MCP）
 
 呼叫 `/e2e-payment-test` Skill，由 Claude 透過 Playwright MCP 直接控制瀏覽器執行測試，不需預先撰寫測試腳本。
 
 涵蓋 3 個場景：完整金流成功路徑、模擬付款失敗、空購物車狀態驗證。
 測試過程以 Windows 剪取工具（Snipping Tool）螢幕錄製，影片上傳至 YouTube。
+
+### Postman Collection
+
+```bash
+npm run test:postman
+```
+
+需先手動啟動專案。此指令會重新產生 `openapi.json`，轉換成 `postman/collection.json`（不納入版控，可重新產生），並用 Newman 執行。Collection 使用 `{{baseUrl}}`（預設 `http://localhost:3001`）、`token`、`sessionId` 三個變數，登入成功後自動把 JWT 存入 `token`，其餘需要登入的請求自動帶上 Bearer Token。
 
 ## 常用指令
 
@@ -222,6 +246,9 @@ npm run test:unit
 | `npm run css:build` | 建置壓縮 CSS |
 | `npm run openapi` | 產生 OpenAPI JSON |
 | `npm test` / `npm run test:unit` | 執行 Vitest 單元測試套件 |
+| `npm run test:integration` | 執行 Integration Test（獨立暫存 DB） |
+| `npm run test:e2e` | 執行 Playwright 自動化 E2E 測試 |
+| `npm run test:postman` | 產生並執行 Postman Collection（Newman） |
 
 ## 專案文件
 
