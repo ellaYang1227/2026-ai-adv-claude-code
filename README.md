@@ -272,4 +272,3 @@ npm run postman
 | [docs/TESTING.md](./docs/TESTING.md) | 測試規範與指南 |
 | [docs/CHANGELOG.md](./docs/CHANGELOG.md) | 更新日誌 |
 | [docs/ci/README.md](./docs/ci/README.md) | GitHub Actions CI 說明與執行紀錄 |
-| [docs/ci/README.md](./docs/ci/README.md) | GitHub Actions CI 說明與執行紀錄 |
