@@ -2,7 +2,7 @@
 
 - **分支**：`homework3-shipping-testing`
 - **建立日期**：2026-09-06
-- **狀態**：進行中
+- **狀態**：進行中（挑戰三待你最終確認）
 
 ---
 
@@ -124,10 +124,11 @@
 - [x] 你 push 後回報另一個 warning：`Post Checkout repository` 步驟出現 `fatal: No url found for submodule path '.claude/skills/ecpay' in .gitmodules`（exit code 128，不影響測試結果，但 log 有紅字警告）
 - [x] **根因**：`.claude/skills/ecpay` 早在舊的 `2ac47ec`（合併 homework1-ai-agent）就被誤記成 git submodule（mode `160000`），但專案沒有對應的 `.gitmodules` 定義其 URL；`main` 分支也有同樣問題。確認該路徑內容是官方 `ECPay/ECPay-API-Skill` 公開 repo 的乾淨 clone（無未提交變更，commit 與 gitlink 記錄一致），刪除巢狀 `.git`（你手動執行 `rm -rf`）後改為一般追蹤檔案，比照同目錄下的 `design`、`e2e-payment-test`
 - [x] Commit（`62a2366`）
-- [ ] 再次 push，確認這次 GitHub Actions 真正跑成功（無失敗測試、無 submodule 警告）
+- [x] 再次 push，確認這次 GitHub Actions 真正跑成功（無失敗測試、無 submodule 警告）
+- [x] 你附上截圖確認：`Unit and integration tests` job 全綠燈，56 個 Unit Test + 3 個 Integration Test 皆通過，無 submodule 警告；截圖已存至 `docs/ci/screenshots/workflow-run-success.png` 並在 `docs/ci/README.md` 引用（Commit `85f17f3`）
 
 ### 人工驗收 Checkpoint
-- [ ] 🔲 **通知你**：請至 GitHub Actions 頁面確認 workflow 執行成功（Unit Test、Integration Test 兩個步驟皆綠燈），並確認 `docs/ci/` 截圖已存檔
+- [x] 🔲 **通知你**：請至 GitHub Actions 頁面確認 workflow 執行成功（Unit Test、Integration Test 兩個步驟皆綠燈），並確認 `docs/ci/` 截圖已存檔
 - [ ] 🔲 **等待你最終確認**，作業三計畫完成
 
 ---
