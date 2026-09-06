@@ -114,6 +114,12 @@
             <p class="text-text-primary">{{ detailOrder.recipient_name }}</p>
             <p class="text-text-secondary">{{ detailOrder.recipient_email }}</p>
             <p class="text-text-secondary">{{ detailOrder.recipient_address }}</p>
+            <p class="text-text-secondary mt-1">
+              配送方式：{{ detailOrder.delivery_method === 'store' ? '超商取貨' : '宅配' }}
+              <span v-if="detailOrder.is_remote_area">・偏遠地區</span>
+              <span v-if="detailOrder.is_rush_delivery">・當日急件</span>
+              （運費 NT$ {{ detailOrder.shipping_fee.toLocaleString() }}）
+            </p>
           </div>
 
           <div class="border-t border-gray-100 pt-4">

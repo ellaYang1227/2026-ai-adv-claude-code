@@ -3,6 +3,7 @@ const { v4: uuidv4 } = require('uuid');
 const db = require('../database');
 const authMiddleware = require('../middleware/authMiddleware');
 const ecpayService = require('../services/ecpayService');
+const { calculateShippingFee } = require('../utils/shipping');
 
 const router = express.Router();
 
@@ -38,6 +39,19 @@ function generateOrderNo() {
  *                 format: email
  *               recipientAddress:
  *                 type: string
+ *               deliveryMethod:
+ *                 type: string
+ *                 enum: [home, store]
+ *                 default: home
+ *                 description: 配送方式（宅配 home / 超商取貨 store）
+ *               isRemoteArea:
+ *                 type: boolean
+ *                 default: false
+ *                 description: 是否為偏遠地區（加收 200 元）
+ *               isRushDelivery:
+ *                 type: boolean
+ *                 default: false
+ *                 description: 是否為當日急件（加收 250 元）
  *     responses:
  *       201:
  *         description: 訂單建立成功
@@ -53,8 +67,14 @@ function generateOrderNo() {
  *                       type: string
  *                     order_no:
  *                       type: string
+ *                     subtotal:
+ *                       type: integer
+ *                     shipping_fee:
+ *                       type: integer
  *                     total_amount:
  *                       type: integer
+ *                     delivery_method:
+ *                       type: string
  *                     status:
  *                       type: string
  *                     items:
@@ -80,6 +100,9 @@ function generateOrderNo() {
  */
 router.post('/', (req, res) => {
   const { recipientName, recipientEmail, recipientAddress } = req.body;
+  const deliveryMethod = req.body.deliveryMethod || 'home';
+  const isRemoteArea = !!req.body.isRemoteArea;
+  const isRushDelivery = !!req.body.isRushDelivery;
   const userId = req.user.userId;
 
   if (!recipientName || !recipientEmail || !recipientAddress) {
@@ -96,6 +119,14 @@ router.post('/', (req, res) => {
       data: null,
       error: 'VALIDATION_ERROR',
       message: 'Email 格式不正確'
+    });
+  }
+
+  if (!['home', 'store'].includes(deliveryMethod)) {
+    return res.status(400).json({
+      data: null,
+      error: 'VALIDATION_ERROR',
+      message: 'deliveryMethod 必須為 home 或 store'
     });
   }
 
@@ -128,9 +159,11 @@ router.post('/', (req, res) => {
   }
 
   // Calculate total
-  const totalAmount = cartItems.reduce(
+  const subtotal = cartItems.reduce(
     (sum, item) => sum + item.product_price * item.quantity, 0
   );
+  const shippingFee = calculateShippingFee({ deliveryMethod, subtotal, isRemoteArea, isRushDelivery });
+  const totalAmount = subtotal + shippingFee;
 
   const orderId = uuidv4();
   const orderNo = generateOrderNo();
@@ -138,9 +171,9 @@ router.post('/', (req, res) => {
   // Transaction: create order, order items, deduct stock, clear cart
   const createOrder = db.transaction(() => {
     db.prepare(
-      `INSERT INTO orders (id, order_no, user_id, recipient_name, recipient_email, recipient_address, total_amount)
-       VALUES (?, ?, ?, ?, ?, ?, ?)`
-    ).run(orderId, orderNo, userId, recipientName, recipientEmail, recipientAddress, totalAmount);
+      `INSERT INTO orders (id, order_no, user_id, recipient_name, recipient_email, recipient_address, total_amount, delivery_method, is_remote_area, is_rush_delivery, shipping_fee)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    ).run(orderId, orderNo, userId, recipientName, recipientEmail, recipientAddress, totalAmount, deliveryMethod, isRemoteArea ? 1 : 0, isRushDelivery ? 1 : 0, shippingFee);
 
     const insertItem = db.prepare(
       `INSERT INTO order_items (id, order_id, product_id, product_name, product_price, quantity)
@@ -168,7 +201,12 @@ router.post('/', (req, res) => {
     data: {
       id: order.id,
       order_no: order.order_no,
+      subtotal,
+      shipping_fee: order.shipping_fee,
       total_amount: order.total_amount,
+      delivery_method: order.delivery_method,
+      is_remote_area: !!order.is_remote_area,
+      is_rush_delivery: !!order.is_rush_delivery,
       status: order.status,
       items: orderItems,
       created_at: order.created_at

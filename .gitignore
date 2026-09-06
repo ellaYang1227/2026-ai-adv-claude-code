@@ -3,6 +3,7 @@ node_modules/
 
 # Build output
 backend-project/public/css/output.css
+openapi.json
 
 
 # SQLite database files

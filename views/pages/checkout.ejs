@@ -54,6 +54,29 @@
               :class="{ 'border-red-400': errors.recipientAddress }" />
             <p v-if="errors.recipientAddress" class="text-red-500 text-xs mt-1">{{ errors.recipientAddress }}</p>
           </div>
+          <div>
+            <label class="block text-xs font-medium text-text-primary mb-1.5 uppercase tracking-wide">配送方式</label>
+            <div class="flex gap-4 text-sm">
+              <label class="flex items-center gap-1.5">
+                <input type="radio" value="home" v-model="form.deliveryMethod" />
+                宅配（NT$ 120，滿 NT$ 1,500 免運）
+              </label>
+              <label class="flex items-center gap-1.5">
+                <input type="radio" value="store" v-model="form.deliveryMethod" />
+                超商取貨（NT$ 60）
+              </label>
+            </div>
+          </div>
+          <div class="flex gap-4 text-sm">
+            <label class="flex items-center gap-1.5">
+              <input type="checkbox" v-model="form.isRemoteArea" />
+              偏遠地區（加收 NT$ 200）
+            </label>
+            <label class="flex items-center gap-1.5">
+              <input type="checkbox" v-model="form.isRushDelivery" />
+              當日急件（加收 NT$ 250）
+            </label>
+          </div>
         </div>
 
         <button @click="submitOrder" :disabled="submitting"
@@ -80,13 +103,13 @@
           </div>
           <div class="flex justify-between">
             <span class="text-text-secondary">運費</span>
-            <span>{{ cartTotal >= 500 ? '免運' : 'NT$ 150' }}</span>
+            <span>{{ shippingFee === 0 ? '免運' : 'NT$ ' + shippingFee.toLocaleString() }}</span>
           </div>
         </div>
         <div class="border-t border-bloom-border pt-3 mt-3 flex justify-between items-center">
           <span class="font-semibold text-text-primary">合計</span>
           <span class="font-semibold text-lg text-bloom-green">
-            NT$ {{ (cartTotal + (cartTotal >= 500 ? 0 : 150)).toLocaleString() }}
+            NT$ {{ orderTotal.toLocaleString() }}
           </span>
         </div>
       </div>

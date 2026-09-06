@@ -64,11 +64,11 @@
         <div class="space-y-2 text-sm">
           <div class="flex justify-between text-text-secondary">
             <span>小計</span>
-            <span>NT$ {{ order.total_amount.toLocaleString() }}</span>
+            <span>NT$ {{ (order.total_amount - order.shipping_fee).toLocaleString() }}</span>
           </div>
           <div class="flex justify-between text-text-secondary">
-            <span>運費</span>
-            <span>免費</span>
+            <span>運費（{{ order.delivery_method === 'store' ? '超商取貨' : '宅配' }}）</span>
+            <span>{{ order.shipping_fee === 0 ? '免運' : 'NT$ ' + order.shipping_fee.toLocaleString() }}</span>
           </div>
           <div class="flex justify-between" style="font-size:16px; font-weight:600; color:#1A1A1A;">
             <span>合計</span>

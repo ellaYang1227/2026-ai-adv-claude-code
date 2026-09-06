@@ -7,13 +7,32 @@ createApp({
     const loading = ref(true);
     const submitting = ref(false);
     const cartItems = ref([]);
-    const form = ref({ recipientName: '', recipientEmail: '', recipientAddress: '' });
+    const form = ref({
+      recipientName: '',
+      recipientEmail: '',
+      recipientAddress: '',
+      deliveryMethod: 'home',
+      isRemoteArea: false,
+      isRushDelivery: false
+    });
     const errors = ref({});
 
     const cartTotal = computed(function () {
       return cartItems.value.reduce(function (sum, item) {
         return sum + item.product.price * item.quantity;
       }, 0);
+    });
+
+    // 與 src/utils/shipping.js 的規則保持一致，僅供結帳頁即時顯示，實際金額以後端回傳為準
+    const shippingFee = computed(function () {
+      let base = form.value.deliveryMethod === 'store' ? 60 : 120;
+      if (form.value.deliveryMethod === 'home' && cartTotal.value >= 1500) base = 0;
+      const surcharge = (form.value.isRemoteArea ? 200 : 0) + (form.value.isRushDelivery ? 250 : 0);
+      return base + surcharge;
+    });
+
+    const orderTotal = computed(function () {
+      return cartTotal.value + shippingFee.value;
     });
 
     function validate() {
@@ -60,6 +79,6 @@ createApp({
       loading.value = false;
     });
 
-    return { loading, submitting, cartItems, form, errors, cartTotal, submitOrder };
+    return { loading, submitting, cartItems, form, errors, cartTotal, shippingFee, orderTotal, submitOrder };
   }
 }).mount('#app');

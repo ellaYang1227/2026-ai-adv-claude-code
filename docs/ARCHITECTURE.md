@@ -18,6 +18,8 @@
 │   ├── database.js            # 資料庫初始化（建表、migration、seed admin + 商品資料、匯出 db 實例）
 │   ├── services/
 │   │   └── ecpayService.js        # ECPay 綠界金流服務（CheckMacValue、付款表單、QueryTradeInfo）
+│   ├── utils/
+│   │   └── shipping.js            # 配送費用計算（純函式，無 DB 依賴，供 orderRoutes 與 Unit Test 使用）
 │   ├── middleware/
 │   │   ├── authMiddleware.js      # JWT Bearer Token 驗證，解析 req.user
 │   │   ├── adminMiddleware.js     # 檢查 req.user.role === 'admin'，否則 403
@@ -27,7 +29,7 @@
 │       ├── authRoutes.js          # 註冊、登入、取得個人資料
 │       ├── productRoutes.js       # 前台商品列表（分頁）、商品詳情
 │       ├── cartRoutes.js          # 購物車 CRUD（雙模式認證：JWT / Session）
-│       ├── orderRoutes.js         # 建立訂單、訂單列表、訂單詳情、模擬付款
+│       ├── orderRoutes.js         # 建立訂單（含運費計算）、訂單列表、訂單詳情、模擬付款
 │       ├── adminProductRoutes.js  # 後台商品 CRUD（需 admin 權限）
 │       ├── adminOrderRoutes.js    # 後台訂單列表（可篩選狀態）、訂單詳情
 │       └── pageRoutes.js          # EJS 頁面路由（前台 7 頁 + 後台 2 頁）

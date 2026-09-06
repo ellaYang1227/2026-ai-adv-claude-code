@@ -81,6 +81,20 @@ function initializeDatabase() {
     db.exec("ALTER TABLE orders ADD COLUMN merchant_trade_no TEXT DEFAULT NULL");
   }
 
+  // Migration: add shipping columns to orders
+  if (!columnNames.includes('delivery_method')) {
+    db.exec("ALTER TABLE orders ADD COLUMN delivery_method TEXT NOT NULL DEFAULT 'home'");
+  }
+  if (!columnNames.includes('is_remote_area')) {
+    db.exec("ALTER TABLE orders ADD COLUMN is_remote_area INTEGER NOT NULL DEFAULT 0");
+  }
+  if (!columnNames.includes('is_rush_delivery')) {
+    db.exec("ALTER TABLE orders ADD COLUMN is_rush_delivery INTEGER NOT NULL DEFAULT 0");
+  }
+  if (!columnNames.includes('shipping_fee')) {
+    db.exec("ALTER TABLE orders ADD COLUMN shipping_fee INTEGER NOT NULL DEFAULT 0");
+  }
+
   // Seed data
   seedAdminUser();
   seedProducts();

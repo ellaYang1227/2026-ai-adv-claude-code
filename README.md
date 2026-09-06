@@ -28,6 +28,18 @@
 
 ---
 
+## [作業3] 配送費用模組、完整測試流程與 CI 自動化
+
+| 挑戰 | 說明 |
+|------|------|
+| 挑戰一：配送費用模組與 Unit Test | 新增 `src/utils/shipping.js` 運費計算模組（宅配／超商取貨、滿額免運、偏遠地區、當日急件），整合進建立訂單流程並補上結帳頁配送選項，8 個 Unit Test 案例 |
+| 挑戰二：Integration Test、E2E Test 與 Postman Collection | 進行中 |
+| 挑戰三：GitHub Actions 自動化測試 | 待開始 |
+
+分支：[homework3-shipping-testing](https://github.com/ellaYang1227/2026-ai-adv-claude-code/tree/homework3-shipping-testing)
+
+---
+
 ## 範例專案：Bloom & Co. 花卉電商網站
 
 全端花卉電商示範專案，提供前台商品瀏覽、購物車、訂單與線上付款功能，以及後台商品與訂單管理介面。
@@ -185,13 +197,13 @@ npm run dev:css
 
 ## 測試
 
-### 單元 / 整合測試（Vitest）
+### 單元測試（Vitest）
 
 ```bash
-npm test
+npm run test:unit
 ```
 
-使用 Vitest + supertest，按固定順序執行（ecpay → auth → products → cart → orders → adminProducts → adminOrders），共 48 個測試案例。
+使用 Vitest + supertest，按固定順序執行（shipping → ecpay → auth → products → cart → orders → adminProducts → adminOrders），共 56 個測試案例。
 
 ### E2E 測試（Playwright MCP）
 
@@ -209,7 +221,7 @@ npm test
 | `npm run dev:css` | Tailwind CSS watch |
 | `npm run css:build` | 建置壓縮 CSS |
 | `npm run openapi` | 產生 OpenAPI JSON |
-| `npm test` | 執行 Vitest 測試套件 |
+| `npm test` / `npm run test:unit` | 執行 Vitest 單元測試套件 |
 
 ## 專案文件
 

@@ -211,25 +211,29 @@
 **認證**：JWT（僅登入用戶可建立訂單，不支援 session 模式）
 
 **請求 body**：
-| 欄位 | 型別 | 必填 | 說明 |
-|------|------|------|------|
-| recipientName | string | 是 | 收件人姓名 |
-| recipientEmail | string | 是 | 收件人 email（需符合格式） |
-| recipientAddress | string | 是 | 收件地址 |
+| 欄位 | 型別 | 必填 | 預設值 | 說明 |
+|------|------|------|--------|------|
+| recipientName | string | 是 | 無 | 收件人姓名 |
+| recipientEmail | string | 是 | 無 | 收件人 email（需符合格式） |
+| recipientAddress | string | 是 | 無 | 收件地址 |
+| deliveryMethod | string | 否 | `home` | 配送方式：`home`（宅配）/ `store`（超商取貨） |
+| isRemoteArea | boolean | 否 | `false` | 是否為偏遠地區 |
+| isRushDelivery | boolean | 否 | `false` | 是否為當日急件 |
 
 **業務邏輯**（含 Transaction）：
 1. 驗證三個收件欄位皆存在，否則 400
 2. 驗證 recipientEmail 格式
-3. 查詢該用戶的購物車項目（JOIN products 取得即時價格與庫存）
-4. 購物車為空 → 400 `CART_EMPTY`
-5. 逐項檢查庫存，任一不足 → 400 `STOCK_INSUFFICIENT`（訊息列出所有不足商品名稱）
-6. 計算訂單總金額（所有項目的 product_price * quantity）
-7. 在 **Transaction** 中執行：
-   - INSERT orders（產生訂單編號 `ORD-YYYYMMDD-XXXXX`）
+3. 驗證 deliveryMethod 為 `home` 或 `store`，否則 400
+4. 查詢該用戶的購物車項目（JOIN products 取得即時價格與庫存）
+5. 購物車為空 → 400 `CART_EMPTY`
+6. 逐項檢查庫存，任一不足 → 400 `STOCK_INSUFFICIENT`（訊息列出所有不足商品名稱）
+7. 計算商品小計（所有項目的 product_price * quantity），並呼叫 `calculateShippingFee()`（見 4.7）算出運費，`total_amount = 小計 + 運費`
+8. 在 **Transaction** 中執行：
+   - INSERT orders（產生訂單編號 `ORD-YYYYMMDD-XXXXX`，含配送方式、加成旗標與運費）
    - 逐項 INSERT order_items（快照商品名稱與價格）
    - 逐項 UPDATE products 扣除庫存（`stock = stock - quantity`）
    - DELETE 該用戶的所有 cart_items（清空購物車）
-8. 回傳訂單資訊 `{ id, order_no, total_amount, status: 'pending', items, created_at }`
+9. 回傳訂單資訊 `{ id, order_no, subtotal, shipping_fee, total_amount, delivery_method, is_remote_area, is_rush_delivery, status: 'pending', items, created_at }`
 
 **訂單編號格式**：`ORD-YYYYMMDD-XXXXX`（XXXXX 為 UUID 前 5 碼大寫）
 
@@ -294,6 +298,21 @@
 - 查詢 order_items
 - 查詢下單用戶的 `{ name, email }`
 - 回傳 `{ ...order, items, user }`
+
+### 4.7 配送費用計算 ✅
+
+`src/utils/shipping.js` 匯出的 `calculateShippingFee({ deliveryMethod, subtotal, isRemoteArea, isRushDelivery })` 純函式，於建立訂單時呼叫，計算結果連同配送資訊一併寫入 `orders` 表（`delivery_method`、`is_remote_area`、`is_rush_delivery`、`shipping_fee`）。
+
+**運費規則**：
+| 配送條件 | 費用 |
+|------|------|
+| 宅配基本運費 | 120 元 |
+| 超商取貨 | 60 元 |
+| 商品小計滿 1,500 元（僅宅配） | 免基本運費 |
+| 偏遠地區 | 加收 200 元 |
+| 當日急件 | 加收 250 元 |
+
+計算方式：`base（依配送方式決定，宅配滿額則歸零）+ 偏遠地區加成 + 當日急件加成`，偏遠地區與當日急件對兩種配送方式皆適用且可疊加。詳見 `tests/shipping.test.js` 的 8 個測試案例。
 
 ---
 
