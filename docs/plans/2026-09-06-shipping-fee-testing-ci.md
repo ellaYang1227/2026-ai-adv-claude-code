@@ -93,11 +93,15 @@
 - [x] `package.json` 新增 `"postman"`（僅產生 collection + environment）與 `"test:postman"`（openapi → postman → newman run）
 
 ### 收尾
-- [x] `.gitignore` 新增 `postman/collection.json`、`playwright-report/`、`test-results/`
+- [x] `.gitignore` 新增 `postman/collection.json`、`postman/environment.json`、`playwright-report/`、`test-results/`
 - [x] 確認 `npm run test:unit`（56 通過）、`npm run test:integration`（3 通過）、`npm run test:e2e`（1 通過，穩定重跑兩次皆過）、`npm run test:postman`（21 requests、0 failed，含 admin 端點皆正確帶上 Bearer Token）皆可正常執行
 - [x] 更新 `README.md`「測試」章節：補上 Integration/E2E（自動化）/Postman 三種新測試方式與指令說明，並將原本的 E2E 手動探索小節重新命名區隔
 - [x] 更新 `docs/TESTING.md`：新增測試檔案一覽（shipping/ecpay）、Integration Test／E2E Test／Postman Collection 三個新章節、常見陷阱補充資料庫共用僅限 Unit Test
 - [x] Commit（依子項目拆成 4 個 commit：`80c9b2c` Integration Test、`1c1b7e8` E2E Test、`7a2d0dd` Postman Collection、`5c891f6` 文件更新）
+- [x]（人工驗收過程中的補充修正，各自獨立 commit）
+  - `12a60b5` `.gitignore` 補上本機 Claude Code 產生的空白狀態檔（`.claude/loop.md`、`.claude/output-styles`）
+  - `f9e919c` README 補上遺漏的 `npm run postman` 指令說明
+  - `0ee576c` 新增獨立的 `postman/environment.json`（只放 `baseUrl`），`test:postman` 改用 `newman -e postman/environment.json` 執行
 
 ### 人工驗收 Checkpoint
 - [ ] 🔲 **通知你**：請本機啟動專案（`npm start`）後，依序手動執行 `npm run test:integration`、`npm run test:e2e`、`npm run test:postman`，確認皆綠燈通過，並檢查 `tests/e2e/` 截圖與 Postman 執行結果是否符合預期
