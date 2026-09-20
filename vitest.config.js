@@ -17,6 +17,7 @@ export default defineConfig({
         'tests/adminOrders.test.js',
       ],
     },
+    globalSetup: ['./tests/unitGlobalSetup.js'],
     hookTimeout: 10000,
   },
 });

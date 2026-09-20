@@ -50,7 +50,16 @@
 }
 ```
 
-**為什麼不能平行**：Unit Test 全部共用專案的 `database.sqlite` 檔案。測試間有隱性資料依賴——例如 orders 測試依賴 auth 測試中已註冊的用戶機制，以及 products 測試中確認存在的商品 ID。
+**為什麼不能平行**：整個 run 共用同一份暫存 sqlite（見下方「DB 隔離」）。測試間有隱性資料依賴——例如 orders 測試依賴 auth 測試中已註冊的用戶機制，以及 products 測試中確認存在的商品 ID。
+
+## DB 隔離
+
+Unit Test 不會動到專案的 `database.sqlite`：
+
+- `tests/unitGlobalSetup.js` 作為 `vitest.config.js` 的 `globalSetup`（整個 `npm run test:unit` 只執行一次），在系統暫存目錄產生一個獨立的 sqlite 檔案路徑，並寫入一個以 `process.pid` 命名的暫存 marker 檔（`vitest-unit-db-path-<pid>.txt`）；執行結束後的 `teardown` 會刪除該 sqlite 檔（含 `-wal`/`-shm`）與 marker 檔本身。
+- 之所以不直接用 vitest 的 `provide`/`inject`：vitest 是 ESM-only 套件，本專案的測試檔是 CJS（`require`），`require('vitest')` 會丟出錯誤，且每個測試檔各自在獨立子行程執行、無法共用 `process.env`，因此改用暫存 marker 檔跨行程傳遞路徑（marker 檔名以 globalSetup 所在主行程的 pid 命名，測試檔則用 `process.ppid` 讀取，兩者相同）。
+- `tests/setup.js` 在載入 `app`（進而載入 `src/database.js`）之前，若 `process.env.DATABASE_PATH` 尚未設定，就讀取該 marker 檔取得路徑並寫入 `process.env.DATABASE_PATH`。因為 `tests/setup.js` 同時被 Integration Test 重複使用（見下方），這裡刻意用「尚未設定才讀」的方式，避免覆蓋 Integration Test 自己的 `setupFiles`（`tests/integration/setup.js`）已設定好的路徑。
+- 由於使用全新的暫存 DB，「常見陷阱」原先記錄的種子商品庫存耗盡問題（見下方）已不會發生——每次執行都是乾淨的種子資料。
 
 ## 輔助函式（`tests/setup.js`）
 
@@ -162,7 +171,7 @@ it('should deny access to regular user', async () => {
 執行：`npm run test:integration`（獨立設定檔 `vitest.integration.config.js`）。
 
 - **DB 隔離**：`src/database.js` 的 DB 路徑改為 `process.env.DATABASE_PATH || 預設路徑`。`tests/integration/setup.js` 作為 `setupFiles`，在載入 app 之前於系統暫存目錄產生一個獨立的 sqlite 檔案路徑並寫入 `process.env.DATABASE_PATH`，`afterAll` 時刪除該檔案與 `-wal`/`-shm`。**完全不會動到專案的 `database.sqlite`**。
-- **測試輔助函式**：沿用 `tests/setup.js` 的 `app`、`request`、`getAdminToken`、`registerUser`（相對路徑 `require('../setup')`），因為 DB 路徑已由 setupFiles 決定，重複使用不會影響隔離性。
+- **測試輔助函式**：沿用 `tests/setup.js` 的 `app`、`request`、`getAdminToken`、`registerUser`（相對路徑 `require('../setup')`）。`tests/setup.js` 只在 `process.env.DATABASE_PATH` 尚未設定時才會去讀 Unit Test 的暫存 marker 檔，因此這裡 setupFiles 先設定好的路徑不會被覆蓋，重複使用不會影響隔離性。
 - **涵蓋情境**：`tests/integration/order-flow.integration.test.js`
   - 完整成功流程：登入 → 加入購物車 → 建立訂單（含配送方式與運費）→ 驗證回應格式、運費/總額正確性、庫存正確扣除、購物車清空
   - 庫存不足：建立訂單前用 admin 調低庫存 → 驗證回傳 `STOCK_INSUFFICIENT`、不建立訂單、不誤扣庫存、購物車不被清空
@@ -173,7 +182,7 @@ it('should deny access to regular user', async () => {
 執行：`npm run test:e2e`（設定檔 `playwright.config.js`）。
 
 - **不會另外啟動伺服器**：`playwright.config.js` 未設定 `webServer`，執行前需自行 `npm start` 或 `npm run dev:server`。
-- **直接對真實的 `database.sqlite` 與綠界測試站操作**：每次執行都會建立真實訂單、扣真實庫存，屬於預期行為；如需乾淨環境可比照 Unit Test 刪除 `database.sqlite` 重建。
+- **直接對真實的 `database.sqlite` 與綠界測試站操作**：每次執行都會建立真實訂單、扣真實庫存，屬於預期行為；如需乾淨環境可手動刪除 `database.sqlite`（及 `-wal`/`-shm`）讓專案重新建立種子資料（Unit / Integration Test 已各自使用暫存 DB，不受此影響）。
 - **`tests/e2e/checkout-payment.spec.js`**：登入（`admin@hexschool.com` / `12345678`）→ 加入購物車 → 結帳 → 前往綠界付款頁 → 選擇「網路 ATM」→「台灣土地銀行」→ 前往付款 → 關閉提示視窗 → 在土地銀行測試頁點擊 Save → 確認付款成功 → 返回商店 → 驗證訂單狀態為「已付款」→ 存下成功畫面截圖至 `test-results/e2e/`（不納入版控）。
 - **已知的第三方頁面不穩定性**：綠界測試站（`payment-stage.ecpay.com.tw`）頁首廣告區塊偶爾延遲載入，會讓付款方式分頁的選取狀態被重置回「信用卡」。腳本對「點擊網路ATM分頁 → 確認選擇銀行欄位可見」這段加了 `expect(...).toPass()` 重試邏輯因應。
 
@@ -196,9 +205,9 @@ it('should deny access to regular user', async () => {
 
 新增測試檔案後必須更新 `vitest.config.js` 的 `sequence.files`，否則測試可能因未定義的執行順序導致失敗。
 
-### 2. 資料庫共用（僅限 Unit Test）
+### 2. 資料庫共用（僅限單次 Unit Test 執行內）
 
-Unit Test（`tests/*.test.js`）共用同一個 `database.sqlite` 檔案。測試中建立的資料（用戶、商品、訂單等）會永久保留在資料庫中，長期重複執行可能耗盡種子商品的庫存導致後續測試失敗（曾實際發生過）。如果測試失敗留下髒資料或庫存被耗盡，可刪除 `database.sqlite`（及 `-wal`/`-shm`）讓專案重新建立種子資料。Integration Test 使用獨立的暫存 DB，不受此限制。
+Unit Test（`tests/*.test.js`）在**同一次** `npm run test:unit` 執行內共用同一份暫存 sqlite（見上方「DB 隔離」），這是刻意設計，因為測試檔之間有循序資料依賴。但每次重新執行 `npm run test:unit` 都會拿到全新的暫存 DB，不會像過去直接寫入 `database.sqlite` 那樣長期累積資料、耗盡種子商品庫存。Integration Test 則是每個測試檔各自獨立的暫存 DB，隔離程度更高。
 
 ### 3. bcrypt salt rounds
 
